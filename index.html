@@ -333,7 +333,7 @@
         .legend-color.today { background: #667eea; }
 
         /* ========================================
-           NEW ABOUT SECTION (COLLAGE STYLE)
+           NEW ABOUT SECTION (TILTED SLIDING MARQUEE)
            ======================================== */
         #about {
             position: relative;
@@ -343,61 +343,77 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4rem 2rem;
+            padding: 0;
         }
 
-        .collage-bg {
+        /* Container tilted */
+        .tilted-marquee-wrapper {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+            top: -20%;
+            left: -10%;
+            width: 120%;
+            height: 140%;
+            transform: rotate(-3deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+            opacity: 0.5; /* Dimmed background */
+            pointer-events: none; /* Let clicks pass through to text if needed */
         }
 
-        /* Styling for scattered images */
-        .collage-item {
-            position: absolute;
+        .marquee-row {
+            display: flex;
+            gap: 20px;
+            width: 200%; /* Ensure enough width for smooth looping */
+        }
+
+        /* Row Animations */
+        .slide-left {
+            animation: scrollLeft 40s linear infinite;
+        }
+
+        .slide-right {
+            animation: scrollRight 40s linear infinite;
+            transform: translateX(-50%); /* Start position for right scroll */
+        }
+
+        @keyframes scrollLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @keyframes scrollRight {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        .marquee-item {
+            flex-shrink: 0;
+            width: 300px;
+            height: 200px;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            filter: grayscale(100%) brightness(0.7); /* Black & white, slightly dark */
-            transition: all 0.5s ease;
-            opacity: 0.8;
+            filter: grayscale(100%);
+            transition: all 0.3s ease;
         }
 
-        .collage-item img {
+        .marquee-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: block;
         }
 
-        .collage-item:hover {
-            filter: grayscale(0%) brightness(1);
-            z-index: 5;
-            transform: scale(1.05) !important;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        }
-
-        /* Positioning specific images to mimic the reference */
-        .c-img-1 { width: 20%; left: 5%; top: 20%; transform: rotate(-5deg); }
-        .c-img-2 { width: 25%; left: 20%; bottom: 10%; transform: rotate(3deg); z-index: 2; }
-        .c-img-3 { width: 18%; left: 40%; top: 10%; transform: rotate(5deg); }
-        .c-img-4 { width: 22%; right: 25%; bottom: 20%; transform: rotate(-4deg); }
-        .c-img-5 { width: 28%; right: -5%; top: 15%; transform: rotate(6deg); }
-        .c-img-6 { width: 20%; right: 10%; bottom: 5%; transform: rotate(-2deg); }
-        .c-img-7 { width: 15%; left: -2%; bottom: 40%; transform: rotate(8deg); }
-
+        /* Overlay Content */
         .about-overlay-content {
             position: relative;
             z-index: 10;
             text-align: center;
-            background: radial-gradient(circle at center, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 70%);
-            padding: 3rem;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 80%);
+            padding: 4rem;
             border-radius: 50%;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
         }
 
         .central-text {
@@ -506,7 +522,7 @@
         @media (max-width: 1024px) {
             h1 { font-size: 3.5rem; }
             .dashboard-preview { width: 95%; }
-            .c-img-1, .c-img-5, .c-img-7 { display: none; } /* Hide some images on tablet to reduce clutter */
+            .marquee-item { width: 220px; height: 140px; }
         }
 
         @media (max-width: 768px) {
@@ -526,9 +542,8 @@
             .form-row { grid-template-columns: 1fr; gap: 0; }
             .dashboard-card { transform: none !important; }
             
-            /* Collage Mobile Adjustments */
-            .c-img-2, .c-img-4, .c-img-6 { display: none; } /* Hide more on mobile */
-            .c-img-3 { width: 80%; left: 10%; top: 10%; opacity: 0.3; transform: none; } /* Show one main image faded */
+            .marquee-item { width: 160px; height: 100px; }
+            .text-white, .text-gradient { font-size: 2.5rem; }
         }
 
         @media (max-width: 480px) {
@@ -638,17 +653,50 @@
         </div>
     </div>
 
-    <!-- About Section (New Collage Style) -->
+    <!-- About Section (Tilted Sliding Marquee) -->
     <section id="about">
-        <div class="collage-bg">
-            <!-- Images from your previous marquee, arranged as scattered collage -->
-            <div class="collage-item c-img-1"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584083621_1244582484362180_7048718235451286026_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH3NE6dj2zFqvdp867c8U9nSEhJVWQF7VtISElVZAXtW8RBLOtxz9dr9FkZLzvWPEGBjlp4Q-yhFAqkAkpU1U0J&_nc_ohc=pPU077fJf7oQ7kNvwGPKCFY&_nc_oc=AdnX7NEzevWPobDBBFh6r9ZkStvBbHMIHGySyLCMbaw29DSAJB1rErn1sFoI3e_IClhvUc8spZdmwdwGjyzzzivB&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=DT3CjTxXt0m5AIQI1bhaZA&oh=00_AfhDTlz8ftYEOxLMR2qRu-lKImyJL0ER1nPAKH47Mx0xPQ&oe=6929DED0" alt="Work 1"></div>
-            <div class="collage-item c-img-2"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584081824_1243238751163220_4817020775730592325_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGmbBqGu0OWwHj6NEp4ryjCNbYLsUsq1QM1tguxSyrVA_p8jksqo-trmWVB9chuAMNiZCh1FYmumozenzoLnvm_&_nc_ohc=zY5fYnSyKOkQ7kNvwGt8oxo&_nc_oc=AdmlRZ_EiOCqfXIdhXcCoUj-DhjzIoOWNzx0lXx6a3OL1180KjYcc9h_SCjOoHJV6oKsGXx_8Mv8fMR-UFlpPGDz&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=AuNH4w88QZtWnyLwZzv9BA&oh=00_AfhXSCZbxfWi3b0iWGPy8mKs_hupfhW6EYOI45iCPX4plw&oe=6929CD20" alt="Work 2"></div>
-            <div class="collage-item c-img-3"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583346259_1243238954496533_4486815624509464565_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFAbPvTl113XUN1JQOfwTY0EbcFhmo-p_IRtwWGaj6n8vyYMe0a09AmW2G2dkgRxZ5T7-5ZBxPQE94QgJ96Gaz3&_nc_ohc=6kAaM6SSBqAQ7kNvwF3DknB&_nc_oc=AdkgyFhskbOmfelf-rLzptYh5G6dumfpQJWaN9iGYRotqev81SmYjbR7VfjcOA6B347oJoKXaeVr30rpM1GKUd5h&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=_DE-df2TcndY_hLqsXcU3Q&oh=00_AfhrpE3hROtmQGcsaWJkEGdjLbX7al_at4c3A43u1vN6Og&oe=6929D59D" alt="Work 3"></div>
-            <div class="collage-item c-img-4"><img src="https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/581219548_1240543638099398_8265859514418368324_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEGHS5PCS7HT1mnKnSfiVQip_8BFAU2wv6n_wEUBTbC_oansDiYA_nJx1gUjBt9gvNHuIPhJTsHq94sVESPDQah&_nc_ohc=3l3uMbkmO4oQ7kNvwFis0W-&_nc_oc=AdkgdPBH478nTosOFta5xUzZzcdzXstQEck0FUjjoq1KRAQ3eFbuDSFc_0uqzZAoQWB2gRH9LiFf47umhhgwsczy&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=Be5JafEnYl-KDHkfo0GVTA&oh=00_AfhcYcGdyWMb9rMTY7mKDQz_tEjTcJ4Orrz2baTFuvHyYg&oe=6929FBD7" alt="Work 4"></div>
-            <div class="collage-item c-img-5"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583081427_1240543604766068_7617081055060763388_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHDfafdjsGVYLrdf-jtm6RM9Hq_StiTSpT0er9K2JNKlCu1sDZY5dWzjVIrY4OEaiLhkM74XdmxHNUy3RBtWfPZ&_nc_ohc=VWfVRv-s408Q7kNvwEFD4E0&_nc_oc=AdnisTzjveuESUkCnPC2j7RuWpPsxas8HWQca2FsWrIfmNONEVR2q9di8XaQmzGIzoa1GHd8pqoAnVv1Z-t1lWJI&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=cx9BGCbnk43vq5RBTQC-uw&oh=00_Afid4qK9iQpznEngFvUoMj_dpbuBW5F7keW42Xfg3QbJmg&oe=6929D83C" alt="Work 5"></div>
-            <div class="collage-item c-img-6"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/581335526_1240543164766112_865208384607382058_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEfzb-lrpTRHCRZZJrFgpsK2UL-rfn88crZQv6t-fzxyrJBKnNoPjFzZzcXouLRWL9wzc3-0MLFY8l9UB6nbrdb&_nc_ohc=xGVPTKOfSRUQ7kNvwEa7rr5&_nc_oc=AdkWbKtaMH-n1ouVvYQzNfO278ljLGZ2d6uusRXGaAnz4ril_yDcGjqShMqFe7P0jrZBLaIXYtUVoZDE9bJ1kHiX&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=nzJg1Rb1GWJxVzQ2fKEDLQ&oh=00_AfissA-yn5Rp5QVCqPk2aIsmnFcwY-okb5CT09pvYzjCHA&oe=6929D798" alt="Work 6"></div>
-            <div class="collage-item c-img-7"><img src="https://scontent.fbkk5-5.fna.fbcdn.net/v/t39.30808-6/579627055_1239208884899540_7505172026174050823_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFhCrGHfieDt6dQGCSnnFgiYvM-JJ4Ze9Vi8z4knhl71Rq1ZTMF6QDpdoH8sBDAwKLguOGH7qrpxXAjyLV_QsCG&_nc_ohc=bo6LEE-gkRsQ7kNvwHo9doz&_nc_oc=AdkgHfrDmqU3-pZoU4ygHU-4v1EQSlNmjKNX60cOc-EpH_Mw204tEDxa9HngOsPrByf8KvYt74vj_Hh5StUcao5r&_nc_zt=23&_nc_ht=scontent.fbkk5-5.fna&_nc_gid=0SrZ4uuuA9WayAQBk6j99g&oh=00_AfjW6tKYO8sgAkzDvyIs4i1Bwad_ILNz8PDhgmV72b6Xug&oe=6929E93B" alt="Work 7"></div>
+        <div class="tilted-marquee-wrapper">
+            <!-- Row 1: Slide Left -->
+            <div class="marquee-row slide-left">
+                <!-- Set 1 -->
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584083621_1244582484362180_7048718235451286026_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH3NE6dj2zFqvdp867c8U9nSEhJVWQF7VtISElVZAXtW8RBLOtxz9dr9FkZLzvWPEGBjlp4Q-yhFAqkAkpU1U0J&_nc_ohc=pPU077fJf7oQ7kNvwGPKCFY&_nc_oc=AdnX7NEzevWPobDBBFh6r9ZkStvBbHMIHGySyLCMbaw29DSAJB1rErn1sFoI3e_IClhvUc8spZdmwdwGjyzzzivB&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=DT3CjTxXt0m5AIQI1bhaZA&oh=00_AfhDTlz8ftYEOxLMR2qRu-lKImyJL0ER1nPAKH47Mx0xPQ&oe=6929DED0" alt="Work 1"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584081824_1243238751163220_4817020775730592325_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGmbBqGu0OWwHj6NEp4ryjCNbYLsUsq1QM1tguxSyrVA_p8jksqo-trmWVB9chuAMNiZCh1FYmumozenzoLnvm_&_nc_ohc=zY5fYnSyKOkQ7kNvwGt8oxo&_nc_oc=AdmlRZ_EiOCqfXIdhXcCoUj-DhjzIoOWNzx0lXx6a3OL1180KjYcc9h_SCjOoHJV6oKsGXx_8Mv8fMR-UFlpPGDz&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=AuNH4w88QZtWnyLwZzv9BA&oh=00_AfhXSCZbxfWi3b0iWGPy8mKs_hupfhW6EYOI45iCPX4plw&oe=6929CD20" alt="Work 2"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583346259_1243238954496533_4486815624509464565_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFAbPvTl113XUN1JQOfwTY0EbcFhmo-p_IRtwWGaj6n8vyYMe0a09AmW2G2dkgRxZ5T7-5ZBxPQE94QgJ96Gaz3&_nc_ohc=6kAaM6SSBqAQ7kNvwF3DknB&_nc_oc=AdkgyFhskbOmfelf-rLzptYh5G6dumfpQJWaN9iGYRotqev81SmYjbR7VfjcOA6B347oJoKXaeVr30rpM1GKUd5h&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=_DE-df2TcndY_hLqsXcU3Q&oh=00_AfhrpE3hROtmQGcsaWJkEGdjLbX7al_at4c3A43u1vN6Og&oe=6929D59D" alt="Work 3"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/581219548_1240543638099398_8265859514418368324_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEGHS5PCS7HT1mnKnSfiVQip_8BFAU2wv6n_wEUBTbC_oansDiYA_nJx1gUjBt9gvNHuIPhJTsHq94sVESPDQah&_nc_ohc=3l3uMbkmO4oQ7kNvwFis0W-&_nc_oc=AdkgdPBH478nTosOFta5xUzZzcdzXstQEck0FUjjoq1KRAQ3eFbuDSFc_0uqzZAoQWB2gRH9LiFf47umhhgwsczy&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=Be5JafEnYl-KDHkfo0GVTA&oh=00_AfhcYcGdyWMb9rMTY7mKDQz_tEjTcJ4Orrz2baTFuvHyYg&oe=6929FBD7" alt="Work 4"></div>
+                <!-- Duplicate for Loop -->
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584083621_1244582484362180_7048718235451286026_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH3NE6dj2zFqvdp867c8U9nSEhJVWQF7VtISElVZAXtW8RBLOtxz9dr9FkZLzvWPEGBjlp4Q-yhFAqkAkpU1U0J&_nc_ohc=pPU077fJf7oQ7kNvwGPKCFY&_nc_oc=AdnX7NEzevWPobDBBFh6r9ZkStvBbHMIHGySyLCMbaw29DSAJB1rErn1sFoI3e_IClhvUc8spZdmwdwGjyzzzivB&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=DT3CjTxXt0m5AIQI1bhaZA&oh=00_AfhDTlz8ftYEOxLMR2qRu-lKImyJL0ER1nPAKH47Mx0xPQ&oe=6929DED0" alt="Work 1"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584081824_1243238751163220_4817020775730592325_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGmbBqGu0OWwHj6NEp4ryjCNbYLsUsq1QM1tguxSyrVA_p8jksqo-trmWVB9chuAMNiZCh1FYmumozenzoLnvm_&_nc_ohc=zY5fYnSyKOkQ7kNvwGt8oxo&_nc_oc=AdmlRZ_EiOCqfXIdhXcCoUj-DhjzIoOWNzx0lXx6a3OL1180KjYcc9h_SCjOoHJV6oKsGXx_8Mv8fMR-UFlpPGDz&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=AuNH4w88QZtWnyLwZzv9BA&oh=00_AfhXSCZbxfWi3b0iWGPy8mKs_hupfhW6EYOI45iCPX4plw&oe=6929CD20" alt="Work 2"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583346259_1243238954496533_4486815624509464565_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFAbPvTl113XUN1JQOfwTY0EbcFhmo-p_IRtwWGaj6n8vyYMe0a09AmW2G2dkgRxZ5T7-5ZBxPQE94QgJ96Gaz3&_nc_ohc=6kAaM6SSBqAQ7kNvwF3DknB&_nc_oc=AdkgyFhskbOmfelf-rLzptYh5G6dumfpQJWaN9iGYRotqev81SmYjbR7VfjcOA6B347oJoKXaeVr30rpM1GKUd5h&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=_DE-df2TcndY_hLqsXcU3Q&oh=00_AfhrpE3hROtmQGcsaWJkEGdjLbX7al_at4c3A43u1vN6Og&oe=6929D59D" alt="Work 3"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/581219548_1240543638099398_8265859514418368324_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEGHS5PCS7HT1mnKnSfiVQip_8BFAU2wv6n_wEUBTbC_oansDiYA_nJx1gUjBt9gvNHuIPhJTsHq94sVESPDQah&_nc_ohc=3l3uMbkmO4oQ7kNvwFis0W-&_nc_oc=AdkgdPBH478nTosOFta5xUzZzcdzXstQEck0FUjjoq1KRAQ3eFbuDSFc_0uqzZAoQWB2gRH9LiFf47umhhgwsczy&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=Be5JafEnYl-KDHkfo0GVTA&oh=00_AfhcYcGdyWMb9rMTY7mKDQz_tEjTcJ4Orrz2baTFuvHyYg&oe=6929FBD7" alt="Work 4"></div>
+            </div>
+
+            <!-- Row 2: Slide Right -->
+            <div class="marquee-row slide-right">
+                <!-- Set 2 -->
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583081427_1240543604766068_7617081055060763388_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHDfafdjsGVYLrdf-jtm6RM9Hq_StiTSpT0er9K2JNKlCu1sDZY5dWzjVIrY4OEaiLhkM74XdmxHNUy3RBtWfPZ&_nc_ohc=VWfVRv-s408Q7kNvwEFD4E0&_nc_oc=AdnisTzjveuESUkCnPC2j7RuWpPsxas8HWQca2FsWrIfmNONEVR2q9di8XaQmzGIzoa1GHd8pqoAnVv1Z-t1lWJI&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=cx9BGCbnk43vq5RBTQC-uw&oh=00_Afid4qK9iQpznEngFvUoMj_dpbuBW5F7keW42Xfg3QbJmg&oe=6929D83C" alt="Work 5"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/581335526_1240543164766112_865208384607382058_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEfzb-lrpTRHCRZZJrFgpsK2UL-rfn88crZQv6t-fzxyrJBKnNoPjFzZzcXouLRWL9wzc3-0MLFY8l9UB6nbrdb&_nc_ohc=xGVPTKOfSRUQ7kNvwEa7rr5&_nc_oc=AdkWbKtaMH-n1ouVvYQzNfO278ljLGZ2d6uusRXGaAnz4ril_yDcGjqShMqFe7P0jrZBLaIXYtUVoZDE9bJ1kHiX&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=nzJg1Rb1GWJxVzQ2fKEDLQ&oh=00_AfissA-yn5Rp5QVCqPk2aIsmnFcwY-okb5CT09pvYzjCHA&oe=6929D798" alt="Work 6"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-5.fna.fbcdn.net/v/t39.30808-6/579627055_1239208884899540_7505172026174050823_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFhCrGHfieDt6dQGCSnnFgiYvM-JJ4Ze9Vi8z4knhl71Rq1ZTMF6QDpdoH8sBDAwKLguOGH7qrpxXAjyLV_QsCG&_nc_ohc=bo6LEE-gkRsQ7kNvwHo9doz&_nc_oc=AdkgHfrDmqU3-pZoU4ygHU-4v1EQSlNmjKNX60cOc-EpH_Mw204tEDxa9HngOsPrByf8KvYt74vj_Hh5StUcao5r&_nc_zt=23&_nc_ht=scontent.fbkk5-5.fna&_nc_gid=0SrZ4uuuA9WayAQBk6j99g&oh=00_AfjW6tKYO8sgAkzDvyIs4i1Bwad_ILNz8PDhgmV72b6Xug&oe=6929E93B" alt="Work 7"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584083621_1244582484362180_7048718235451286026_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH3NE6dj2zFqvdp867c8U9nSEhJVWQF7VtISElVZAXtW8RBLOtxz9dr9FkZLzvWPEGBjlp4Q-yhFAqkAkpU1U0J&_nc_ohc=pPU077fJf7oQ7kNvwGPKCFY&_nc_oc=AdnX7NEzevWPobDBBFh6r9ZkStvBbHMIHGySyLCMbaw29DSAJB1rErn1sFoI3e_IClhvUc8spZdmwdwGjyzzzivB&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=DT3CjTxXt0m5AIQI1bhaZA&oh=00_AfhDTlz8ftYEOxLMR2qRu-lKImyJL0ER1nPAKH47Mx0xPQ&oe=6929DED0" alt="Work 1"></div>
+                <!-- Duplicate for Loop -->
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583081427_1240543604766068_7617081055060763388_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHDfafdjsGVYLrdf-jtm6RM9Hq_StiTSpT0er9K2JNKlCu1sDZY5dWzjVIrY4OEaiLhkM74XdmxHNUy3RBtWfPZ&_nc_ohc=VWfVRv-s408Q7kNvwEFD4E0&_nc_oc=AdnisTzjveuESUkCnPC2j7RuWpPsxas8HWQca2FsWrIfmNONEVR2q9di8XaQmzGIzoa1GHd8pqoAnVv1Z-t1lWJI&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=cx9BGCbnk43vq5RBTQC-uw&oh=00_Afid4qK9iQpznEngFvUoMj_dpbuBW5F7keW42Xfg3QbJmg&oe=6929D83C" alt="Work 5"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/581335526_1240543164766112_865208384607382058_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEfzb-lrpTRHCRZZJrFgpsK2UL-rfn88crZQv6t-fzxyrJBKnNoPjFzZzcXouLRWL9wzc3-0MLFY8l9UB6nbrdb&_nc_ohc=xGVPTKOfSRUQ7kNvwEa7rr5&_nc_oc=AdkWbKtaMH-n1ouVvYQzNfO278ljLGZ2d6uusRXGaAnz4ril_yDcGjqShMqFe7P0jrZBLaIXYtUVoZDE9bJ1kHiX&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=nzJg1Rb1GWJxVzQ2fKEDLQ&oh=00_AfissA-yn5Rp5QVCqPk2aIsmnFcwY-okb5CT09pvYzjCHA&oe=6929D798" alt="Work 6"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-5.fna.fbcdn.net/v/t39.30808-6/579627055_1239208884899540_7505172026174050823_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFhCrGHfieDt6dQGCSnnFgiYvM-JJ4Ze9Vi8z4knhl71Rq1ZTMF6QDpdoH8sBDAwKLguOGH7qrpxXAjyLV_QsCG&_nc_ohc=bo6LEE-gkRsQ7kNvwHo9doz&_nc_oc=AdkgHfrDmqU3-pZoU4ygHU-4v1EQSlNmjKNX60cOc-EpH_Mw204tEDxa9HngOsPrByf8KvYt74vj_Hh5StUcao5r&_nc_zt=23&_nc_ht=scontent.fbkk5-5.fna&_nc_gid=0SrZ4uuuA9WayAQBk6j99g&oh=00_AfjW6tKYO8sgAkzDvyIs4i1Bwad_ILNz8PDhgmV72b6Xug&oe=6929E93B" alt="Work 7"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584083621_1244582484362180_7048718235451286026_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH3NE6dj2zFqvdp867c8U9nSEhJVWQF7VtISElVZAXtW8RBLOtxz9dr9FkZLzvWPEGBjlp4Q-yhFAqkAkpU1U0J&_nc_ohc=pPU077fJf7oQ7kNvwGPKCFY&_nc_oc=AdnX7NEzevWPobDBBFh6r9ZkStvBbHMIHGySyLCMbaw29DSAJB1rErn1sFoI3e_IClhvUc8spZdmwdwGjyzzzivB&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=DT3CjTxXt0m5AIQI1bhaZA&oh=00_AfhDTlz8ftYEOxLMR2qRu-lKImyJL0ER1nPAKH47Mx0xPQ&oe=6929DED0" alt="Work 1"></div>
+            </div>
+
+            <!-- Row 3: Slide Left -->
+            <div class="marquee-row slide-left">
+                <!-- Set 3 (Mix) -->
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583346259_1243238954496533_4486815624509464565_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFAbPvTl113XUN1JQOfwTY0EbcFhmo-p_IRtwWGaj6n8vyYMe0a09AmW2G2dkgRxZ5T7-5ZBxPQE94QgJ96Gaz3&_nc_ohc=6kAaM6SSBqAQ7kNvwF3DknB&_nc_oc=AdkgyFhskbOmfelf-rLzptYh5G6dumfpQJWaN9iGYRotqev81SmYjbR7VfjcOA6B347oJoKXaeVr30rpM1GKUd5h&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=_DE-df2TcndY_hLqsXcU3Q&oh=00_AfhrpE3hROtmQGcsaWJkEGdjLbX7al_at4c3A43u1vN6Og&oe=6929D59D" alt="Work 3"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/581219548_1240543638099398_8265859514418368324_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEGHS5PCS7HT1mnKnSfiVQip_8BFAU2wv6n_wEUBTbC_oansDiYA_nJx1gUjBt9gvNHuIPhJTsHq94sVESPDQah&_nc_ohc=3l3uMbkmO4oQ7kNvwFis0W-&_nc_oc=AdkgdPBH478nTosOFta5xUzZzcdzXstQEck0FUjjoq1KRAQ3eFbuDSFc_0uqzZAoQWB2gRH9LiFf47umhhgwsczy&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=Be5JafEnYl-KDHkfo0GVTA&oh=00_AfhcYcGdyWMb9rMTY7mKDQz_tEjTcJ4Orrz2baTFuvHyYg&oe=6929FBD7" alt="Work 4"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584083621_1244582484362180_7048718235451286026_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH3NE6dj2zFqvdp867c8U9nSEhJVWQF7VtISElVZAXtW8RBLOtxz9dr9FkZLzvWPEGBjlp4Q-yhFAqkAkpU1U0J&_nc_ohc=pPU077fJf7oQ7kNvwGPKCFY&_nc_oc=AdnX7NEzevWPobDBBFh6r9ZkStvBbHMIHGySyLCMbaw29DSAJB1rErn1sFoI3e_IClhvUc8spZdmwdwGjyzzzivB&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=DT3CjTxXt0m5AIQI1bhaZA&oh=00_AfhDTlz8ftYEOxLMR2qRu-lKImyJL0ER1nPAKH47Mx0xPQ&oe=6929DED0" alt="Work 1"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584081824_1243238751163220_4817020775730592325_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGmbBqGu0OWwHj6NEp4ryjCNbYLsUsq1QM1tguxSyrVA_p8jksqo-trmWVB9chuAMNiZCh1FYmumozenzoLnvm_&_nc_ohc=zY5fYnSyKOkQ7kNvwGt8oxo&_nc_oc=AdmlRZ_EiOCqfXIdhXcCoUj-DhjzIoOWNzx0lXx6a3OL1180KjYcc9h_SCjOoHJV6oKsGXx_8Mv8fMR-UFlpPGDz&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=AuNH4w88QZtWnyLwZzv9BA&oh=00_AfhXSCZbxfWi3b0iWGPy8mKs_hupfhW6EYOI45iCPX4plw&oe=6929CD20" alt="Work 2"></div>
+                <!-- Duplicate for Loop -->
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583346259_1243238954496533_4486815624509464565_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFAbPvTl113XUN1JQOfwTY0EbcFhmo-p_IRtwWGaj6n8vyYMe0a09AmW2G2dkgRxZ5T7-5ZBxPQE94QgJ96Gaz3&_nc_ohc=6kAaM6SSBqAQ7kNvwF3DknB&_nc_oc=AdkgyFhskbOmfelf-rLzptYh5G6dumfpQJWaN9iGYRotqev81SmYjbR7VfjcOA6B347oJoKXaeVr30rpM1GKUd5h&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=_DE-df2TcndY_hLqsXcU3Q&oh=00_AfhrpE3hROtmQGcsaWJkEGdjLbX7al_at4c3A43u1vN6Og&oe=6929D59D" alt="Work 3"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/581219548_1240543638099398_8265859514418368324_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEGHS5PCS7HT1mnKnSfiVQip_8BFAU2wv6n_wEUBTbC_oansDiYA_nJx1gUjBt9gvNHuIPhJTsHq94sVESPDQah&_nc_ohc=3l3uMbkmO4oQ7kNvwFis0W-&_nc_oc=AdkgdPBH478nTosOFta5xUzZzcdzXstQEck0FUjjoq1KRAQ3eFbuDSFc_0uqzZAoQWB2gRH9LiFf47umhhgwsczy&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=Be5JafEnYl-KDHkfo0GVTA&oh=00_AfhcYcGdyWMb9rMTY7mKDQz_tEjTcJ4Orrz2baTFuvHyYg&oe=6929FBD7" alt="Work 4"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584083621_1244582484362180_7048718235451286026_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH3NE6dj2zFqvdp867c8U9nSEhJVWQF7VtISElVZAXtW8RBLOtxz9dr9FkZLzvWPEGBjlp4Q-yhFAqkAkpU1U0J&_nc_ohc=pPU077fJf7oQ7kNvwGPKCFY&_nc_oc=AdnX7NEzevWPobDBBFh6r9ZkStvBbHMIHGySyLCMbaw29DSAJB1rErn1sFoI3e_IClhvUc8spZdmwdwGjyzzzivB&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=DT3CjTxXt0m5AIQI1bhaZA&oh=00_AfhDTlz8ftYEOxLMR2qRu-lKImyJL0ER1nPAKH47Mx0xPQ&oe=6929DED0" alt="Work 1"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584081824_1243238751163220_4817020775730592325_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGmbBqGu0OWwHj6NEp4ryjCNbYLsUsq1QM1tguxSyrVA_p8jksqo-trmWVB9chuAMNiZCh1FYmumozenzoLnvm_&_nc_ohc=zY5fYnSyKOkQ7kNvwGt8oxo&_nc_oc=AdmlRZ_EiOCqfXIdhXcCoUj-DhjzIoOWNzx0lXx6a3OL1180KjYcc9h_SCjOoHJV6oKsGXx_8Mv8fMR-UFlpPGDz&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=AuNH4w88QZtWnyLwZzv9BA&oh=00_AfhXSCZbxfWi3b0iWGPy8mKs_hupfhW6EYOI45iCPX4plw&oe=6929CD20" alt="Work 2"></div>
+            </div>
         </div>
 
         <div class="about-overlay-content">
