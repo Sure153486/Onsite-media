@@ -2,14 +2,12 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONSITE MEDIA - ส่งมอบงาน</title>
     <!-- เชื่อมต่อไฟล์ CSS -->
     <link rel="stylesheet" href="styles.css">
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Google Fonts (Optional for better typography) -->
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- ✨ INTRO OVERLAY -->
@@ -21,9 +19,6 @@
         </div>
     </div>
 
-    <!-- Mobile Menu Overlay -->
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMenu()"></div>
-
     <!-- Hero Section -->
     <div class="hero" id="home">
         <div class="floating-shapes">
@@ -34,28 +29,19 @@
 
         <nav>
             <div class="logo">ONSITE MEDIA</div>
-            
-            <!-- Hamburger Icon for Mobile -->
-            <div class="hamburger" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-
-            <!-- Nav Container -->
-            <div class="nav-container" id="navContainer">
+            <div style="display: flex; align-items: center;">
                 <ul class="nav-links">
-                    <li><a href="#home" onclick="toggleMenu()">หน้าหลัก</a></li>
-                    <li><a href="#about" onclick="toggleMenu()">เกี่ยวกับเรา</a></li>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
                 </ul>
-                <a href="#login" class="login-btn" onclick="openLoginModal(event); toggleMenu()">เข้าสู่ระบบ</a>
+                <a href="#login" class="login-btn" onclick="openLoginModal(event)">Login</a>
             </div>
         </nav>
 
         <div class="hero-content">
             <h1><span class="typing-text"></span><span class="cursor">|</span></h1>
             <p class="subtitle">
-                ระบบจัดการส่งมอบงานและตรวจสอบตารางงาน<br>สำหรับทีม ONSITE MEDIA
+                เว็บไซต์นี้ออกแบบเพื่อการส่งมอบงานและการดูตารางงานและวันหยุดของแผนก.
             </p>
             <a href="#video" class="cta-button" onclick="openWorkHandoverModal(event)">
                 <span class="play-icon"></span>
@@ -68,14 +54,12 @@
                 <div class="dashboard-header">
                     <div class="dashboard-title">
                         <div class="icon-home">📅</div>
-                        <span>ปฏิทินงาน</span>
+                        <span>ปฏิทินวันหยุด</span>
                     </div>
                     <div class="user-info">
-                        <div class="user-details">
-                            <span id="userDisplayName">Guest</span>
-                            <small id="userRoleDisplay">Visitor</small>
-                        </div>
+                        <span>🔔</span>
                         <div class="avatar"></div>
+                        <span id="userDisplayName">Guest</span>
                     </div>
                 </div>
                 <div class="calendar-container">
@@ -112,30 +96,40 @@
     <!-- About Section -->
     <section id="about">
         <div class="background-container">
-            <!-- Marquee rows (Same as before but responsive handled in CSS) -->
             <div class="marquee-row">
-                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584083621_1244582484362180_7048718235451286026_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH3NE6dj2zFqvdp867c8U9nSEhJVWQF7VtISElVZAXtW8RBLOtxz9dr9FkZLzvWPEGBjlp4Q-yhFAqkAkpU1U0J&_nc_ohc=pPU077fJf7oQ7kNvwGPKCFY&_nc_oc=AdnX7NEzevWPobDBBFh6r9ZkStvBbHMIHGySyLCMbaw29DSAJB1rErn1sFoI3e_IClhvUc8spZdmwdwGjyzzzivB&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=DT3CjTxXt0m5AIQI1bhaZA&oh=00_AfhDTlz8ftYEOxLMR2qRu-lKImyJL0ER1nPAKH47Mx0xPQ&oe=6929DED0" alt="Work 1" loading="lazy"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584081824_1243238751163220_4817020775730592325_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGmbBqGu0OWwHj6NEp4ryjCNbYLsUsq1QM1tguxSyrVA_p8jksqo-trmWVB9chuAMNiZCh1FYmumozenzoLnvm_&_nc_ohc=zY5fYnSyKOkQ7kNvwGt8oxo&_nc_oc=AdmlRZ_EiOCqfXIdhXcCoUj-DhjzIoOWNzx0lXx6a3OL1180KjYcc9h_SCjOoHJV6oKsGXx_8Mv8fMR-UFlpPGDz&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=AuNH4w88QZtWnyLwZzv9BA&oh=00_AfhXSCZbxfWi3b0iWGPy8mKs_hupfhW6EYOI45iCPX4plw&oe=6929CD20" alt="Work 2" loading="lazy"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583346259_1243238954496533_4486815624509464565_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFAbPvTl113XUN1JQOfwTY0EbcFhmo-p_IRtwWGaj6n8vyYMe0a09AmW2G2dkgRxZ5T7-5ZBxPQE94QgJ96Gaz3&_nc_ohc=6kAaM6SSBqAQ7kNvwF3DknB&_nc_oc=AdkgyFhskbOmfelf-rLzptYh5G6dumfpQJWaN9iGYRotqev81SmYjbR7VfjcOA6B347oJoKXaeVr30rpM1GKUd5h&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=_DE-df2TcndY_hLqsXcU3Q&oh=00_AfhrpE3hROtmQGcsaWJkEGdjLbX7al_at4c3A43u1vN6Og&oe=6929D59D" alt="Work 3" loading="lazy"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/581219548_1240543638099398_8265859514418368324_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEGHS5PCS7HT1mnKnSfiVQip_8BFAU2wv6n_wEUBTbC_oansDiYA_nJx1gUjBt9gvNHuIPhJTsHq94sVESPDQah&_nc_ohc=3l3uMbkmO4oQ7kNvwFis0W-&_nc_oc=AdkgdPBH478nTosOFta5xUzZzcdzXstQEck0FUjjoq1KRAQ3eFbuDSFc_0uqzZAoQWB2gRH9LiFf47umhhgwsczy&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=Be5JafEnYl-KDHkfo0GVTA&oh=00_AfhcYcGdyWMb9rMTY7mKDQz_tEjTcJ4Orrz2baTFuvHyYg&oe=6929FBD7" alt="Work 4" loading="lazy"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584083621_1244582484362180_7048718235451286026_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH3NE6dj2zFqvdp867c8U9nSEhJVWQF7VtISElVZAXtW8RBLOtxz9dr9FkZLzvWPEGBjlp4Q-yhFAqkAkpU1U0J&_nc_ohc=pPU077fJf7oQ7kNvwGPKCFY&_nc_oc=AdnX7NEzevWPobDBBFh6r9ZkStvBbHMIHGySyLCMbaw29DSAJB1rErn1sFoI3e_IClhvUc8spZdmwdwGjyzzzivB&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=DT3CjTxXt0m5AIQI1bhaZA&oh=00_AfhDTlz8ftYEOxLMR2qRu-lKImyJL0ER1nPAKH47Mx0xPQ&oe=6929DED0" alt="Work 1"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584081824_1243238751163220_4817020775730592325_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGmbBqGu0OWwHj6NEp4ryjCNbYLsUsq1QM1tguxSyrVA_p8jksqo-trmWVB9chuAMNiZCh1FYmumozenzoLnvm_&_nc_ohc=zY5fYnSyKOkQ7kNvwGt8oxo&_nc_oc=AdmlRZ_EiOCqfXIdhXcCoUj-DhjzIoOWNzx0lXx6a3OL1180KjYcc9h_SCjOoHJV6oKsGXx_8Mv8fMR-UFlpPGDz&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=AuNH4w88QZtWnyLwZzv9BA&oh=00_AfhXSCZbxfWi3b0iWGPy8mKs_hupfhW6EYOI45iCPX4plw&oe=6929CD20" alt="Work 2"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583346259_1243238954496533_4486815624509464565_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFAbPvTl113XUN1JQOfwTY0EbcFhmo-p_IRtwWGaj6n8vyYMe0a09AmW2G2dkgRxZ5T7-5ZBxPQE94QgJ96Gaz3&_nc_ohc=6kAaM6SSBqAQ7kNvwF3DknB&_nc_oc=AdkgyFhskbOmfelf-rLzptYh5G6dumfpQJWaN9iGYRotqev81SmYjbR7VfjcOA6B347oJoKXaeVr30rpM1GKUd5h&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=_DE-df2TcndY_hLqsXcU3Q&oh=00_AfhrpE3hROtmQGcsaWJkEGdjLbX7al_at4c3A43u1vN6Og&oe=6929D59D" alt="Work 3"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/581219548_1240543638099398_8265859514418368324_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEGHS5PCS7HT1mnKnSfiVQip_8BFAU2wv6n_wEUBTbC_oansDiYA_nJx1gUjBt9gvNHuIPhJTsHq94sVESPDQah&_nc_ohc=3l3uMbkmO4oQ7kNvwFis0W-&_nc_oc=AdkgdPBH478nTosOFta5xUzZzcdzXstQEck0FUjjoq1KRAQ3eFbuDSFc_0uqzZAoQWB2gRH9LiFf47umhhgwsczy&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=Be5JafEnYl-KDHkfo0GVTA&oh=00_AfhcYcGdyWMb9rMTY7mKDQz_tEjTcJ4Orrz2baTFuvHyYg&oe=6929FBD7" alt="Work 4"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583081427_1240543604766068_7617081055060763388_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHDfafdjsGVYLrdf-jtm6RM9Hq_StiTSpT0er9K2JNKlCu1sDZY5dWzjVIrY4OEaiLhkM74XdmxHNUy3RBtWfPZ&_nc_ohc=VWfVRv-s408Q7kNvwEFD4E0&_nc_oc=AdnisTzjveuESUkCnPC2j7RuWpPsxas8HWQca2FsWrIfmNONEVR2q9di8XaQmzGIzoa1GHd8pqoAnVv1Z-t1lWJI&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=cx9BGCbnk43vq5RBTQC-uw&oh=00_Afid4qK9iQpznEngFvUoMj_dpbuBW5F7keW42Xfg3QbJmg&oe=6929D83C" alt="Work 1"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/581335526_1240543164766112_865208384607382058_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEfzb-lrpTRHCRZZJrFgpsK2UL-rfn88crZQv6t-fzxyrJBKnNoPjFzZzcXouLRWL9wzc3-0MLFY8l9UB6nbrdb&_nc_ohc=xGVPTKOfSRUQ7kNvwEa7rr5&_nc_oc=AdkWbKtaMH-n1ouVvYQzNfO278ljLGZ2d6uusRXGaAnz4ril_yDcGjqShMqFe7P0jrZBLaIXYtUVoZDE9bJ1kHiX&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=nzJg1Rb1GWJxVzQ2fKEDLQ&oh=00_AfissA-yn5Rp5QVCqPk2aIsmnFcwY-okb5CT09pvYzjCHA&oe=6929D798" alt="Work 2"></div>
             </div>
             <div class="marquee-row">
-                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583081427_1240543604766068_7617081055060763388_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHDfafdjsGVYLrdf-jtm6RM9Hq_StiTSpT0er9K2JNKlCu1sDZY5dWzjVIrY4OEaiLhkM74XdmxHNUy3RBtWfPZ&_nc_ohc=VWfVRv-s408Q7kNvwEFD4E0&_nc_oc=AdnisTzjveuESUkCnPC2j7RuWpPsxas8HWQca2FsWrIfmNONEVR2q9di8XaQmzGIzoa1GHd8pqoAnVv1Z-t1lWJI&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=cx9BGCbnk43vq5RBTQC-uw&oh=00_Afid4qK9iQpznEngFvUoMj_dpbuBW5F7keW42Xfg3QbJmg&oe=6929D83C" alt="Work 5" loading="lazy"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/581335526_1240543164766112_865208384607382058_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEfzb-lrpTRHCRZZJrFgpsK2UL-rfn88crZQv6t-fzxyrJBKnNoPjFzZzcXouLRWL9wzc3-0MLFY8l9UB6nbrdb&_nc_ohc=xGVPTKOfSRUQ7kNvwEa7rr5&_nc_oc=AdkWbKtaMH-n1ouVvYQzNfO278ljLGZ2d6uusRXGaAnz4ril_yDcGjqShMqFe7P0jrZBLaIXYtUVoZDE9bJ1kHiX&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=nzJg1Rb1GWJxVzQ2fKEDLQ&oh=00_AfissA-yn5Rp5QVCqPk2aIsmnFcwY-okb5CT09pvYzjCHA&oe=6929D798" alt="Work 6" loading="lazy"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-5.fna.fbcdn.net/v/t39.30808-6/579627055_1239208884899540_7505172026174050823_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFhCrGHfieDt6dQGCSnnFgiYvM-JJ4Ze9Vi8z4knhl71Rq1ZTMF6QDpdoH8sBDAwKLguOGH7qrpxXAjyLV_QsCG&_nc_ohc=bo6LEE-gkRsQ7kNvwHo9doz&_nc_oc=AdkgHfrDmqU3-pZoU4ygHU-4v1EQSlNmjKNX60cOc-EpH_Mw204tEDxa9HngOsPrByf8KvYt74vj_Hh5StUcao5r&_nc_zt=23&_nc_ht=scontent.fbkk5-5.fna&_nc_gid=0SrZ4uuuA9WayAQBk6j99g&oh=00_AfjW6tKYO8sgAkzDvyIs4i1Bwad_ILNz8PDhgmV72b6Xug&oe=6929E93B" alt="Work 5"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-7.fna.fbcdn.net/v/t39.30808-6/578721267_1237419388411823_6823815432459360113_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFYiTma580tCtKXT7R6k9ASnc21b-vQhA2dzbVv69CEDes61VR-1pISIw6Ghc75Y29jUlLqtC-R2gdCOw0vVyc9&_nc_ohc=NbbeiVmp4YEQ7kNvwFy3ITS&_nc_oc=AdkPeZZksrHibKkZMK4jqaI2q53dsTTaUWXnd2iZNlmY2fZLzQPc-UB5A54Z62II3y4LERuNUbz0z3SmewtdLllR&_nc_zt=23&_nc_ht=scontent.fbkk5-7.fna&_nc_gid=vpt7mNS_Il1dfW3j8dMCJw&oh=00_Afgk3yVyHjPy_UvxKHOsEidEOXMw3ymCa14gOxpbzINrFQ&oe=6929D4E9" alt="Work 6"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/577360780_1236617408492021_7759270004382143312_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGKNQe14XlEnmdWT9ZM9o5-gz6ud_ja-eCDPq53-Nr54OJNJQFRUDeUi0yvO0oTffJdnelv2ON5vqnJum8yUCzZ&_nc_ohc=PQD3JSFTcU8Q7kNvwGr9KJi&_nc_oc=Adn4uMOYEBCz2rHV0CRwGkkck4Qr3Cs_ARRzucB83daSpo6RA9WZb-GpcB9AzjHG9iY-iIo2QYIVRVbE5ukBK5F0&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=ko1WdwP6u09xw2-I0txa-g&oh=00_Afj0TgJ04145YZzUAxkmoxHn3rZSn4pbmKYuwwRc3EI8Ow&oe=6929E6B7" alt="Work 7"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/578257092_1236460415174387_3229812755095899012_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFwPR0mSkA2ZlxpimVDQl99kS7HPhWZrFyRLsc-FZmsXMwYeZVaMAMGYVIZejJukuiJPXuRkSK3LyZ5caUj5j0R&_nc_ohc=06B8wagaJI4Q7kNvwFj5BnH&_nc_oc=AdnJccD26Rlt45tlFWIMyEnPRG-jKq_uP376mRVTDbUs56cRtP6v0cnsaXuNMh_RaCiV52Eyh9yknWDKuq1Dzx48&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=wFimZhxL38RtKWlAizhVhQ&oh=00_Afj8g2e0eE4W94X7xyp85hnIrvFSPrj3yYZ1nCxnK-nfGQ&oe=6929EDA3" alt="Work 8"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/577827980_1236460021841093_8606197240900569011_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEqEwUJv_ijFHGsJx_4NapHxHOk2lmyQnHEc6TaWbJCcbYaUrwqNX1HlmcrrJQi6C_kjIhpePYPiG3l49unCy6t&_nc_ohc=wy0ch6aMSdYQ7kNvwHlua6U&_nc_oc=AdnHu5OV1mil4D8Y4SQhaXLVd8A4-Ik2Tb0BO-n29U30DD5a1kFICB7K-PVbTBKY3M8uyQUrs_zlBlIixy3oDV55&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=IO-u_PgxtPzZn8gAVEnjJg&oh=00_Afg_0WO0mPNknFyXUip--XlifhAd0hDDmLFhjyI8x_PBEQ&oe=6929CC7A" alt="Work 5"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-7.fna.fbcdn.net/v/t39.30808-6/576942969_1235629378590824_1147274106713044988_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHqjuSprdECyz7nRUfEAOpg7gHGRQOW9DPuAcZFA5b0M8oYR1LW2UxJqwhHxAAma6pPVF_WbHkyr_XeRX3DUvVc&_nc_ohc=AR6E5eIVc6QQ7kNvwG24bTD&_nc_oc=Adk6ZgBwR2YZUy-p3jubWzLf2_wz1UBRzcQpFB44YEFFGpr31pqFSThgZB54t0GTABbo06iQsCcnp4ed7L6e0pTD&_nc_zt=23&_nc_ht=scontent.fbkk5-7.fna&_nc_gid=aifv7OCi6h0oa1axkfPTHg&oh=00_AfgETIdW-WZm_G6DGEZyHu4rRG8m6BM09owZfEmXO31Xdg&oe=6929F927" alt="Work 6"></div>
             </div>
             <div class="marquee-row">
-                 <div class="marquee-item"><img src="https://scontent.fbkk5-5.fna.fbcdn.net/v/t39.30808-6/579627055_1239208884899540_7505172026174050823_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFhCrGHfieDt6dQGCSnnFgiYvM-JJ4Ze9Vi8z4knhl71Rq1ZTMF6QDpdoH8sBDAwKLguOGH7qrpxXAjyLV_QsCG&_nc_ohc=bo6LEE-gkRsQ7kNvwHo9doz&_nc_oc=AdkgHfrDmqU3-pZoU4ygHU-4v1EQSlNmjKNX60cOc-EpH_Mw204tEDxa9HngOsPrByf8KvYt74vj_Hh5StUcao5r&_nc_zt=23&_nc_ht=scontent.fbkk5-5.fna&_nc_gid=0SrZ4uuuA9WayAQBk6j99g&oh=00_AfjW6tKYO8sgAkzDvyIs4i1Bwad_ILNz8PDhgmV72b6Xug&oe=6929E93B" alt="Work 7" loading="lazy"></div>
-                 <div class="marquee-item"><img src="https://scontent.fbkk5-7.fna.fbcdn.net/v/t39.30808-6/578721267_1237419388411823_6823815432459360113_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFYiTma580tCtKXT7R6k9ASnc21b-vQhA2dzbVv69CEDes61VR-1pISIw6Ghc75Y29jUlLqtC-R2gdCOw0vVyc9&_nc_ohc=NbbeiVmp4YEQ7kNvwFy3ITS&_nc_oc=AdkPeZZksrHibKkZMK4jqaI2q53dsTTaUWXnd2iZNlmY2fZLzQPc-UB5A54Z62II3y4LERuNUbz0z3SmewtdLllR&_nc_zt=23&_nc_ht=scontent.fbkk5-7.fna&_nc_gid=vpt7mNS_Il1dfW3j8dMCJw&oh=00_Afgk3yVyHjPy_UvxKHOsEidEOXMw3ymCa14gOxpbzINrFQ&oe=6929D4E9" alt="Work 8" loading="lazy"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-5.fna.fbcdn.net/v/t39.30808-6/577308334_1235566478597114_2015083468024729176_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHM_Jw4fBbMVkZNwMNblijybF0hm8lMO1FsXSGbyUw7UStSSLJOggg35gwUwGnQ1c-1Sl6UwmRBhvcCEEsJ9UN0&_nc_ohc=HOmW9jX3NhYQ7kNvwGSDDKd&_nc_oc=AdmTxd5pFob5-caBzouw2MR-UhFRZ2l2wiUkPWr2BsGXeTFtGz-oi5cENc-89Ja_-1sc3rW2nZCP7O5i-EkeITTK&_nc_zt=23&_nc_ht=scontent.fbkk5-5.fna&_nc_gid=tELAqduoDfyNyPQ1eMKm6A&oh=00_AfjjGGyCQ33GdhEPtYszqqxoWGzpCRfmU7OTlVbczp5Vzw&oe=6929DE18" alt="Work 9"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-7.fna.fbcdn.net/v/t39.30808-6/576752742_1235385638615198_5114602704157921080_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHxOu7VeWqOzl7EGHdzdqi5EDMOqyPiaLYQMw6rI-Jotv1-I4FHASCSFOBSPyt_OoNwXUbXatLJqTTPR7A-c3uv&_nc_ohc=toqhYdC3uDMQ7kNvwGfsYm-&_nc_oc=Adl5mZib_YBNTIYUl7vCFEt_x5A9xhVQb2EBC3t1SvJAhQ1iwx1S3vvk_cjIBWW1p9P1vEItuIPpN1r0w0KDIigE&_nc_zt=23&_nc_ht=scontent.fbkk5-7.fna&_nc_gid=FP_0xFtHz6-5FXy2GJXyWg&oh=00_Afh1fKYPiAdAgLbbOhwq2Tjs5dGsveu2GpYO9GE0rd0WnQ&oe=6929CA5E" alt="Work 10"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/574608116_1233155128838249_7601943296203232433_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHkwUF7PI4sxbbGKvOCLPsl0oafi_M5-cHShp-L8zn5wdiOrj-rJpTWiQc3ppyTu3WbW_0lR8zVq1NA_502V6I7&_nc_ohc=PzUcRpmNND4Q7kNvwEqLV0g&_nc_oc=AdmVhbDuw5oD1K1lMU5jcjiw-mDa296YhVAY8OqAI82_xQCEFPkBWwY6ql8UbLWnNYM_nKqp8qvjQ7L9k9IVDftQ&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=-Fq7hjyPWRZYWVV629T_ng&oh=00_AfgLD3OH3TqGeOgou-K5ep5elM4z_ua1TvsUeCnDKP-7Vw&oe=6929EF51" alt="Work 11"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/577406610_1233154688838293_4657264830686211355_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeESWNW-LDOxGPfmBz_fz1yYJDoH4ubRn7skOgfi5tGfu4Hb7_b4HR02IZfMhtEpejn59O5P047J1fDpt9LoS5_K&_nc_ohc=jU26l7RHn8sQ7kNvwF9kW61&_nc_oc=AdlkNBTGc108y8wGA8cBsw-mpMO4gyQOS9ynBL_6qHJQ0LonQtK7osgrOoS8kv9_fRAPlI4dQoBSVqvlZMXNOGmn&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=mS51GBa59wiMJY0hODef7A&oh=00_AfjKVUaRS4el9PlDjS-BOsUyGxllfXNdN69xEcNwJXT6Xw&oe=6929D81B" alt="Work 12"></div>
             </div>
-            <!-- More rows as needed -->
+            <div class="marquee-row">
+                <div class="marquee-item"><img src="https://scontent.fbkk5-8.fna.fbcdn.net/v/t39.30808-6/576600330_1232748632212232_3666377695476788854_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEiBF0knJqlCHKfJ5wZbnzIr76ecsx9XZuvvp5yzH1dm0MOHySnlgc0WiP_e51-sYbCkRqpFtAfjz1RftjHfdOJ&_nc_ohc=AsPoFavKm2IQ7kNvwGlazyO&_nc_oc=AdkWt0TDvJFaBJRAjHz6AT5D-zL-o90Wc0j2JpPF_OkZEdDZbBvZT2pjpMQ2umsXflqN-oJ5Tj7xZKyuE_rhcRfY&_nc_zt=23&_nc_ht=scontent.fbkk5-8.fna&_nc_gid=gqLU6tTUkRT-fERA--F_MQ&oh=00_AfjcPcqEWlGNabNOfZzV7X1Fu7Nuulqm_jQyf1MxSICpiA&oe=6929D614" alt="Work 13"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/574567129_1232010405619388_3656828021743881758_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFIBWUwVb7pIi_ZpmTV-Tlk51kmqFfo7DbnWSaoV-jsNgkpnwlMQCiP_Djeyd3k1LFAY0N0EZziDjyUnBMJOIe1&_nc_ohc=KedUrlppJD8Q7kNvwEQEHSO&_nc_oc=Adk2GyMckIKA7zay3m6-0y-FusM-mjIt0S6VW-xuUdKV8DTRCWo5ur88yN87v4AU2xI6mtxxIwam6aVOUlYVQn73&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=4FnLrIiGO1_BldCO9PizxQ&oh=00_Afh7ZF4uvlXrbUhNVTT0iWX47srgdST5zrVkn8eaeXpDSA&oe=6929CD42" alt="Work 14"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-8.fna.fbcdn.net/v/t39.30808-6/573940272_1231853812301714_6994135009075286114_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEeoaDvLI_IB9H-Oj8AD29nDdD7TGQP8TEN0PtMZA_xMfTrMClM_4WMmBEmf_YLE4uCqii6xWIs5WrwSVR4suMT&_nc_ohc=l_jCKPHZlOoQ7kNvwEJieW_&_nc_oc=AdmCuo9cqOLLdSDQLIyVTlT8O6FT0HMmb3zNbwhDQDA5f2Bxzry9CkcCeODPf791dDvr8iCm_H345k2JW32edKCc&_nc_zt=23&_nc_ht=scontent.fbkk5-8.fna&_nc_gid=FivyQGbdNIkE-SiiWQ7m-Q&oh=00_AfjUj78Cbg5MUJN1F3P91B__lgy_iWhPOUY62cjMSqQf5Q&oe=6929DA76" alt="Work 15"></div>
+                <div class="marquee-item"><img src="https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/574566018_1230378965782532_7825780904163523744_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFDYMH70WCO5IZsyAS-3Bj4aXpb9J0Ifphpelv0nQh-mA3BNPYFp1gPP9fTvkZs-ur8l3SB35fM_KbsLpFv8wvO&_nc_ohc=LSF1H0gCFKwQ7kNvwFU8Jf2&_nc_oc=AdlX6U0kCDfokkfiZJPzlLpaOK96mjRPv4lh1LzF-w3vc6uppgkLohi41omAWZydUdRGIKDPuLuasdcOZX9HwxpG&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=8S9ZIqB5bBUJ6TXrKGZoJQ&oh=00_Afgs55UrRLrq7a5Y2cT_zeDRKx8R3jIR5BHQchmpgdih_A&oe=6929E245" alt="Work 16"></div>
+            </div>
         </div>
 
         <div class="about-content">
             <h1>CENTRAL<br>RAYONG</h1>
             <p>ติดตามโปรโมชั่นและกิจกรรม Event ต่างๆได้ที่</p>
-            <a href="https://web.facebook.com/CentralRayongFanpage" target="_blank" class="about-cta">
-                <span style="margin-right: 5px;">👍</span> ติดตามเพจ
-            </a>
+            <a href="https://web.facebook.com/CentralRayongFanpage" target="_blank" class="about-cta">ติดตาม</a>
         </div>
     </section>
 
@@ -143,21 +137,21 @@
     <div class="modal-overlay" id="loginModal">
         <div class="login-modal">
             <button class="close-btn" onclick="closeLoginModal()">×</button>
-            <h2>เข้าสู่ระบบ</h2>
-            <p class="subtitle-modal">สำหรับเจ้าหน้าที่ ONSITE MEDIA</p>
+            <h2>ล็อกอินเข้าสู่ระบบ</h2>
+            <p class="subtitle-modal">ล็อกอินเพื่อดำเนินการต่อ</p>
             
             <form onsubmit="handleLogin(event)">
                 <div class="form-group">
-                    <label for="email">อีเมล</label>
-                    <input type="email" id="email" placeholder="name@onsitemedia.com" required>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="your.email@example.com" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="password">รหัสผ่าน</label>
-                    <input type="password" id="password" placeholder="••••••••" required>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
                 </div>
                 
-                <button type="submit" class="submit-btn">เข้าสู่ระบบ</button>
+                <button type="submit" class="submit-btn">Login</button>
             </form>
         </div>
     </div>
@@ -165,16 +159,14 @@
     <!-- Work Handover Form Modal -->
     <div class="modal-overlay" id="workHandoverModal">
         <div class="work-handover-modal">
-            <div class="modal-header">
-                <h2>📝 แบบฟอร์มส่งมอบงาน</h2>
-                <button class="close-btn-inline" onclick="closeWorkHandoverModal()">×</button>
-            </div>
-            <p class="subtitle-modal">กรุณากรอกข้อมูลให้ครบถ้วนเพื่อการติดตามงานที่มีประสิทธิภาพ</p>
+            <button class="close-btn" onclick="closeWorkHandoverModal()">×</button>
+            <h2>📝 แบบฟอร์มส่งมอบงาน</h2>
+            <p class="subtitle-modal">กรุณากรอกข้อมูลให้ครบถ้วน</p>
             
             <form onsubmit="handleWorkHandoverSubmit(event)">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="workDate">วันที่บันทึก</label>
+                        <label for="workDate">วันที่-เวลา</label>
                         <input type="datetime-local" id="workDate" required>
                     </div>
                     
@@ -189,51 +181,51 @@
                         <label for="senderDepartment">แผนกผู้ส่ง</label>
                         <select id="senderDepartment" required>
                             <option value="">-- เลือกแผนก --</option>
-                            <option value="sales">ฝ่ายขาย (Sales)</option>
-                            <option value="marketing">ฝ่ายการตลาด (Marketing)</option>
-                            <option value="it">ฝ่าย IT / Support</option>
-                            <option value="hr">ฝ่ายบุคคล (HR)</option>
-                            <option value="finance">ฝ่ายบัญชี (Finance)</option>
-                            <option value="production">ฝ่ายผลิต (Production)</option>
-                            <option value="maintenance">ฝ่ายซ่อมบำรุง (Maintenance)</option>
+                            <option value="sales">ฝ่ายขาย</option>
+                            <option value="marketing">ฝ่ายการตลาด</option>
+                            <option value="it">ฝ่าย IT</option>
+                            <option value="hr">ฝ่ายบุคคล</option>
+                            <option value="finance">ฝ่ายบัญชี</option>
+                            <option value="production">ฝ่ายผลิต</option>
+                            <option value="maintenance">ฝ่ายซ่อมบำรุง</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
                         <label for="priority">ความสำคัญ</label>
                         <select id="priority" required>
-                            <option value="">-- ระดับความเร่งด่วน --</option>
-                            <option value="urgent">🔴 ด่วนมาก (ภายใน 24 ชม.)</option>
-                            <option value="high">🟠 สำคัญ (ภายใน 3 วัน)</option>
-                            <option value="medium">🟡 ปานกลาง (ภายในสัปดาห์)</option>
-                            <option value="low">🟢 ปกติ (ตามแผนงาน)</option>
+                            <option value="">-- เลือกความสำคัญ --</option>
+                            <option value="urgent">🔴 ด่วนมาก</option>
+                            <option value="high">🟠 สำคัญ</option>
+                            <option value="medium">🟡 ปานกลาง</option>
+                            <option value="low">🟢 ปกติ</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="storeName">ชื่อร้าน / โครงการ</label>
-                        <input type="text" id="storeName" placeholder="ระบุชื่อร้านหรือโครงการ" required>
+                        <label for="storeName">ชื่อร้าน</label>
+                        <input type="text" id="storeName" placeholder="ระบุชื่อร้าน/โครงการ" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="location">สถานที่ / ชั้น / โซน</label>
-                        <input type="text" id="location" placeholder="เช่น ชั้น 2 โซน A" required>
+                        <label for="location">ชั้น / พื้นที่</label>
+                        <input type="text" id="location" placeholder="เช่น ชั้น 2 / โซน A" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="workDetails">รายละเอียดงาน</label>
-                    <textarea id="workDetails" rows="4" placeholder="อธิบายรายละเอียดงาน สิ่งที่ต้องทำ หรือหมายเหตุ..." required></textarea>
+                    <textarea id="workDetails" rows="4" placeholder="โปรดระบุรายละเอียดงานที่ต้องการส่งมอบ..." required></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="workDateTime">กำหนดการเริ่มงาน / ส่งมอบ</label>
+                    <label for="workDateTime">วันที่-เวลางาน</label>
                     <input type="datetime-local" id="workDateTime" required>
                 </div>
                 
-                <button type="submit" class="submit-btn">🚀 ยืนยันการส่งมอบงาน</button>
+                <button type="submit" class="submit-btn">ส่งมอบงาน</button>
             </form>
         </div>
     </div>
