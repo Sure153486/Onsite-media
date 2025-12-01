@@ -58,8 +58,22 @@ function typeText() {
     setTimeout(typeText, typingSpeed);
 }
 
+// ✨ HANDLE INTRO ANIMATION
+function handleIntro() {
+    const intro = document.getElementById('introOverlay');
+    
+    // รอ 3.5 วินาทีเพื่อให้ Animation ใน Intro เล่นจบ (Logo fade in + line expand)
+    // แล้วค่อยสไลด์ขึ้น
+    setTimeout(() => {
+        intro.classList.add('hidden');
+    }, 3500); 
+}
+
 // ตรวจสอบสถานะการ Login เมื่อโหลดหน้า
 window.addEventListener('DOMContentLoaded', async () => {
+    // เรียกใช้ Intro Animation
+    handleIntro();
+
     typeText();
     
     const { data: { user } } = await supabase.auth.getUser();
@@ -107,7 +121,7 @@ function renderCalendar() {
     const month = currentDate.getMonth();
     
     const monthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-                       'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+                    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
     document.getElementById('currentMonthYear').textContent = `${monthNames[month]} ${year + 543}`;
     
     const firstDay = new Date(year, month, 1);
@@ -260,9 +274,13 @@ async function openWorkHandoverModal(event) {
     document.body.style.overflow = 'hidden';
     
     const now = new Date();
-    const dateTimeString = now.toISOString().slice(0, 16);
-    document.getElementById('workDate').value = dateTimeString;
-    document.getElementById('workDateTime').value = dateTimeString;
+    // Adjust to Thailand time for display default (optional, simple ISO string here)
+    // Or use local time offset
+    const offset = now.getTimezoneOffset() * 60000;
+    const localISOTime = (new Date(now - offset)).toISOString().slice(0, 16);
+    
+    document.getElementById('workDate').value = localISOTime;
+    document.getElementById('workDateTime').value = localISOTime;
     
     if (user.user_metadata && user.user_metadata.full_name) {
         document.getElementById('senderName').value = user.user_metadata.full_name;
