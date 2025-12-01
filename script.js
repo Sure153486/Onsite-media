@@ -1,39 +1,53 @@
 /* ========================================
-   ไฟล์ JavaScript สำหรับ RACKS Portfolio
-   เชื่อมต่อกับ Supabase + ปฏิทินวันหยุด
+   ไฟล์ JavaScript สำหรับ ONSITE MEDIA
    ======================================== */
 
-// ⚙️ ตั้งค่า Supabase
+// ⚙️ ตั้งค่า Supabase (ใช้ Config เดิมของคุณ)
 const SUPABASE_URL = 'https://slejbpinrkbtkwfqzrbs.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsZWpicGlucmtidGt3ZnF6cmJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1MzIxODUsImV4cCI6MjA3ODEwODE4NX0.NYeuGdkiej5g2b_0BKGvG9JVS03fh9uO2mdD2xMLAXo';
 
-// ⚙️ ตั้งค่า LINE Messaging API
+// ⚙️ ตั้งค่า LINE & Google Script (ใช้ Config เดิม)
 const LINE_CHANNEL_ACCESS_TOKEN = 'NA6cbvMSSdRzh8uXPn3xKcEXiu6mF9n9EvyMrBQIhfCXYOS5zmhlqSyZJtppfYP2RjIqWJBOHjeRoXFMY2SFwGMav7291f5kl1uxV7+5+1KN3boWgvsZ/X5TWrj6IyHzHKt7VzLVL6fx/EhkjAzDpgdB04t89/1O/w1cDnyilFU=';
-
-// 🎯 รายชื่อ User ID ที่ต้องการแจ้งเตือน (ส่งได้หลายคน)
-const LINE_USER_IDS = [
-    'U05e988ee991017311410c6c49f125295',
-    'U91b1ef62be46477c06803071156346bf'
-];
-
+const LINE_USER_IDS = ['U05e988ee991017311410c6c49f125295', 'U91b1ef62be46477c06803071156346bf'];
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLTxcfJrZqPnSXZQimh8psaxdGHUn-5n1Z0e0S31tSAavfIB0FSqx7_NZbrQxcMDQn/exec';
 
 // สร้าง Supabase Client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ตัวแปรสำหรับปฏิทิน
+// ตัวแปร Global
 let currentDate = new Date();
 let holidays = [];
 
-// ตัวแปรสำหรับ Typing Animation
-const typingTexts = ['Ready to start Working.', 'พวกเราพร้อมแล้ว.', 'มาลุยกันเลย.'];
+// Typing Animation Variables
+const typingTexts = ['Ready to Work.', 'พร้อมทำงาน.', 'ส่งมอบงานได้เลย.'];
 let textIndex = 0;
 let charIndex = 0;
 let isDeleting = false;
-let typingSpeed = 150;
+let typingSpeed = 100;
 
+// 📱 Mobile Menu Toggle Function
+function toggleMenu() {
+    const navContainer = document.getElementById('navContainer');
+    const overlay = document.getElementById('mobileMenuOverlay');
+    const hamburger = document.querySelector('.hamburger');
+    
+    navContainer.classList.toggle('active');
+    overlay.classList.toggle('active');
+    hamburger.classList.toggle('active');
+    
+    // Prevent scrolling when menu is open
+    if (navContainer.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Typing Effect
 function typeText() {
     const typingElement = document.querySelector('.typing-text');
+    if (!typingElement) return;
+
     const currentText = typingTexts[textIndex];
     
     if (isDeleting) {
@@ -43,11 +57,11 @@ function typeText() {
     } else {
         typingElement.textContent = currentText.substring(0, charIndex + 1);
         charIndex++;
-        typingSpeed = 150;
+        typingSpeed = 100;
     }
     
     if (!isDeleting && charIndex === currentText.length) {
-        typingSpeed = 2000;
+        typingSpeed = 2000; // Wait before deleting
         isDeleting = true;
     } else if (isDeleting && charIndex === 0) {
         isDeleting = false;
@@ -58,34 +72,31 @@ function typeText() {
     setTimeout(typeText, typingSpeed);
 }
 
-// ✨ HANDLE INTRO ANIMATION
+// Intro Animation Handling
 function handleIntro() {
     const intro = document.getElementById('introOverlay');
-    
-    // รอ 3.5 วินาทีเพื่อให้ Animation ใน Intro เล่นจบ (Logo fade in + line expand)
-    // แล้วค่อยสไลด์ขึ้น
-    setTimeout(() => {
-        intro.classList.add('hidden');
-    }, 3500); 
+    if (intro) {
+        setTimeout(() => {
+            intro.classList.add('hidden');
+        }, 3000); // Reduced time slightly for better UX
+    }
 }
 
-// ตรวจสอบสถานะการ Login เมื่อโหลดหน้า
+// Initialize
 window.addEventListener('DOMContentLoaded', async () => {
-    // เรียกใช้ Intro Animation
     handleIntro();
-
     typeText();
     
     const { data: { user } } = await supabase.auth.getUser();
-    
     if (user) {
-        console.log('ผู้ใช้ล็อกอินแล้ว:', user.email);
+        console.log('User logged in:', user.email);
         updateUIForLoggedInUser(user);
     }
     
     await loadHolidays();
     renderCalendar();
     
+    // Calendar Navigation Listeners
     document.getElementById('prevMonth').addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
         renderCalendar();
@@ -97,7 +108,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
-// โหลดวันหยุดจาก Supabase
+// Load Holidays
 async function loadHolidays() {
     try {
         const { data, error } = await supabase
@@ -106,16 +117,15 @@ async function loadHolidays() {
             .order('date', { ascending: true });
         
         if (error) throw error;
-        
         holidays = data || [];
-        console.log('โหลดวันหยุดสำเร็จ:', holidays);
     } catch (error) {
         console.error('Error loading holidays:', error.message);
+        // Fallback or empty
         holidays = [];
     }
 }
 
-// ฟังก์ชันแสดงปฏิทิน
+// Render Calendar
 function renderCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -130,39 +140,48 @@ function renderCalendar() {
     const startingDayOfWeek = firstDay.getDay();
     
     const prevMonthLastDay = new Date(year, month, 0).getDate();
-    
     const calendarDays = document.getElementById('calendarDays');
     calendarDays.innerHTML = '';
     
+    // Previous Month Filler
     for (let i = startingDayOfWeek - 1; i >= 0; i--) {
         const day = prevMonthLastDay - i;
         const dayDiv = createDayElement(day, true);
+        dayDiv.style.opacity = '0.3';
         calendarDays.appendChild(dayDiv);
     }
     
     const today = new Date();
+    
+    // Current Month Days
     for (let day = 1; day <= daysInMonth; day++) {
         const dayDiv = createDayElement(day, false);
         
+        // Check Today
         if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
             dayDiv.classList.add('today');
         }
         
+        // Check Holiday
         const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const isHoliday = holidays.some(h => h.date === dateString);
-        if (isHoliday) {
+        const holiday = holidays.find(h => h.date === dateString);
+        
+        if (holiday) {
             dayDiv.classList.add('holiday');
-            const holidayInfo = holidays.find(h => h.date === dateString);
-            dayDiv.title = holidayInfo.name || 'วันหยุด';
+            dayDiv.title = holiday.name || 'วันหยุด';
+            
+            // Optional: Add small dot or indicator if needed, currently using color
         }
         
         calendarDays.appendChild(dayDiv);
     }
     
+    // Next Month Filler to fill grid (42 cells max)
     const totalCells = calendarDays.children.length;
-    const remainingCells = 42 - totalCells;
+    const remainingCells = 42 - totalCells; // 6 rows * 7 days
     for (let day = 1; day <= remainingCells; day++) {
         const dayDiv = createDayElement(day, true);
+        dayDiv.style.opacity = '0.3';
         calendarDays.appendChild(dayDiv);
     }
 }
@@ -171,16 +190,13 @@ function createDayElement(day, isOtherMonth) {
     const dayDiv = document.createElement('div');
     dayDiv.className = 'calendar-day';
     dayDiv.textContent = day;
-    
-    if (isOtherMonth) {
-        dayDiv.classList.add('other-month');
-    }
-    
+    if (isOtherMonth) dayDiv.classList.add('other-month');
     return dayDiv;
 }
 
+// Modal Functions
 function openLoginModal(event) {
-    event.preventDefault();
+    if(event) event.preventDefault();
     document.getElementById('loginModal').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -192,13 +208,12 @@ function closeLoginModal() {
 
 async function handleLogin(event) {
     event.preventDefault();
-    
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    
     const submitBtn = event.target.querySelector('.submit-btn');
+    
     const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'กำลังเข้าสู่ระบบ...';
+    submitBtn.textContent = 'กำลังตรวจสอบ...';
     submitBtn.disabled = true;
     
     try {
@@ -207,18 +222,14 @@ async function handleLogin(event) {
             password: password,
         });
         
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
         
-        console.log('Login สำเร็จ:', data.user);
-        alert('เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับ ' + data.user.email);
+        alert(`ยินดีต้อนรับ ${data.user.email}`);
         closeLoginModal();
         updateUIForLoggedInUser(data.user);
         
     } catch (error) {
-        console.error('Login Error:', error.message);
-        alert('เข้าสู่ระบบล้มเหลว: ' + error.message);
+        alert('เข้าสู่ระบบไม่สำเร็จ: ' + error.message);
     } finally {
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
@@ -226,82 +237,74 @@ async function handleLogin(event) {
 }
 
 async function handleLogout() {
-    const { error } = await supabase.auth.signOut();
-    
-    if (error) {
-        console.error('Logout Error:', error.message);
-    } else {
-        alert('ออกจากระบบสำเร็จ');
-        location.reload();
-    }
+    await supabase.auth.signOut();
+    location.reload();
 }
 
 function updateUIForLoggedInUser(user) {
     const loginBtn = document.querySelector('.login-btn');
-    
     if (loginBtn) {
-        loginBtn.textContent = 'Logout';
+        loginBtn.textContent = 'ออกจากระบบ';
         loginBtn.onclick = (e) => {
             e.preventDefault();
-            handleLogout();
+            if(confirm('ต้องการออกจากระบบใช่หรือไม่?')) handleLogout();
         };
+        // Reset style for logout state if needed
+        loginBtn.style.background = 'rgba(239, 68, 68, 0.2)';
+        loginBtn.style.borderColor = '#ef4444';
     }
     
     const userNameDisplay = document.getElementById('userDisplayName');
     if (userNameDisplay) {
         userNameDisplay.textContent = user.email.split('@')[0];
     }
+    
+    const userRoleDisplay = document.getElementById('userRoleDisplay');
+    if (userRoleDisplay) userRoleDisplay.textContent = 'Staff Member';
 }
 
-document.getElementById('loginModal').addEventListener('click', function(event) {
-    if (event.target === this) {
-        closeLoginModal();
-    }
-});
-
+// Work Handover Modal
 async function openWorkHandoverModal(event) {
     event.preventDefault();
-    
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
         alert('กรุณาเข้าสู่ระบบก่อนส่งมอบงาน');
-        openLoginModal(event);
+        openLoginModal();
         return;
     }
     
-    document.getElementById('workHandoverModal').classList.add('active');
+    const modal = document.getElementById('workHandoverModal');
+    modal.classList.add('active');
     document.body.style.overflow = 'hidden';
     
+    // Set default times
     const now = new Date();
-    // Adjust to Thailand time for display default (optional, simple ISO string here)
-    // Or use local time offset
     const offset = now.getTimezoneOffset() * 60000;
     const localISOTime = (new Date(now - offset)).toISOString().slice(0, 16);
     
     document.getElementById('workDate').value = localISOTime;
     document.getElementById('workDateTime').value = localISOTime;
     
-    if (user.user_metadata && user.user_metadata.full_name) {
+    // Auto-fill name if metadata exists
+    if (user.user_metadata?.full_name) {
         document.getElementById('senderName').value = user.user_metadata.full_name;
-    } else {
-        document.getElementById('senderName').value = user.email.split('@')[0];
     }
 }
 
 function closeWorkHandoverModal() {
     document.getElementById('workHandoverModal').classList.remove('active');
     document.body.style.overflow = 'auto';
-    
     document.querySelector('#workHandoverModal form').reset();
 }
 
+// Handle Form Submission
 async function handleWorkHandoverSubmit(event) {
     event.preventDefault();
-    
     const submitBtn = event.target.querySelector('.submit-btn');
     const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'กำลังบันทึกข้อมูล...';
+    
+    submitBtn.textContent = '⏳ กำลังบันทึก...';
     submitBtn.disabled = true;
     
     try {
@@ -317,24 +320,21 @@ async function handleWorkHandoverSubmit(event) {
             created_at: new Date().toISOString()
         };
         
-        // 1. บันทึกลงฐานข้อมูล Supabase
-        const { data, error } = await supabase
-            .from('work_handovers')
-            .insert([workData]);
-        
+        // 1. Supabase Insert
+        const { error } = await supabase.from('work_handovers').insert([workData]);
         if (error) throw error;
         
-        // 2. ส่งข้อมูลไป Google Sheets
+        // 2. Google Sheets
         await sendToGoogleSheets(workData);
         
-        // 3. ส่งการแจ้งเตือนผ่าน LINE (หลายคน)
+        // 3. LINE Notify
         await sendLineNotifications(workData);
         
-        alert('✅ ส่งมอบงานสำเร็จ!\n- บันทึกลง Database\n- บันทึกลง Google Sheets\n- แจ้งเตือนผ่าน LINE แล้ว');
+        alert('✅ ส่งมอบงานสำเร็จเรียบร้อย');
         closeWorkHandoverModal();
         
     } catch (error) {
-        console.error('Error submitting work handover:', error.message);
+        console.error(error);
         alert('❌ เกิดข้อผิดพลาด: ' + error.message);
     } finally {
         submitBtn.textContent = originalText;
@@ -342,135 +342,70 @@ async function handleWorkHandoverSubmit(event) {
     }
 }
 
-async function sendToGoogleSheets(workData) {
+async function sendToGoogleSheets(data) {
     try {
-        if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('ใส่')) {
-            console.warn('ยังไม่ได้ตั้งค่า Google Sheets URL');
-            return;
-        }
-        
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
+        await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(workData)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
         });
-        
-        console.log('✅ ส่งข้อมูลไป Google Sheets สำเร็จ');
-    } catch (error) {
-        console.error('❌ Error sending to Google Sheets:', error.message);
+    } catch (e) {
+        console.warn('Google Sheet Error', e);
     }
 }
 
-// ⭐ ฟังก์ชันส่งการแจ้งเตือนผ่าน LINE (แก้ไขให้ส่งหลายคน)
 async function sendLineNotifications(workData) {
-    try {
-        if (!LINE_CHANNEL_ACCESS_TOKEN || LINE_CHANNEL_ACCESS_TOKEN.includes('ใส่')) {
-            console.warn('ยังไม่ได้ตั้งค่า LINE Channel Access Token');
-            return;
-        }
-        
-        // จัดรูปแบบข้อความ
-        const priorityEmoji = {
-            'urgent': '🔴',
-            'high': '🟠',
-            'medium': '🟡',
-            'low': '🟢'
-        };
-        
-        const departmentName = {
-            'sales': 'ฝ่ายขาย',
-            'marketing': 'ฝ่ายการตลาด',
-            'it': 'ฝ่าย IT',
-            'hr': 'ฝ่ายบุคคล',
-            'finance': 'ฝ่ายบัญชี',
-            'production': 'ฝ่ายผลิต',
-            'maintenance': 'ฝ่ายซ่อมบำรุง'
-        };
-        
-        const message = `
-🔔 มีงานใหม่เข้ามาแล้ว!
+    // Reusing your logic
+    const priorityEmoji = {
+        'urgent': '🔴', 'high': '🟠', 'medium': '🟡', 'low': '🟢'
+    };
+    
+    const message = `
+🔔 *แจ้งเตือนงานใหม่*
 
 ${priorityEmoji[workData.priority] || '⚪'} ความสำคัญ: ${workData.priority}
 👤 ผู้ส่ง: ${workData.sender_name}
-🏢 แผนก: ${departmentName[workData.sender_department] || workData.sender_department}
+🏢 แผนก: ${workData.sender_department}
 🏪 ร้าน: ${workData.store_name}
 📍 สถานที่: ${workData.location}
 📝 รายละเอียด: ${workData.work_details}
-⏰ วันที่-เวลางาน: ${formatDateTime(workData.work_datetime)}
-        `.trim();
-        
-        // 🔄 วนลูปส่งข้อความไปยังทุกคนใน Array
-        let successCount = 0;
-        let failCount = 0;
-        
-        for (let i = 0; i < LINE_USER_IDS.length; i++) {
-            const userId = LINE_USER_IDS[i];
-            
-            try {
-                const payload = {
+⏰ เวลางาน: ${formatDateTime(workData.work_datetime)}
+    `.trim();
+
+    // Loop sending
+    for (const userId of LINE_USER_IDS) {
+        try {
+            await fetch('https://api.line.me/v2/bot/message/push', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}`
+                },
+                body: JSON.stringify({
                     to: userId,
-                    messages: [
-                        {
-                            type: 'text',
-                            text: message
-                        }
-                    ]
-                };
-                
-                const response = await fetch('https://api.line.me/v2/bot/message/push', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}`
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                if (response.ok) {
-                    console.log(`✅ ส่ง LINE ไปยัง User ${i + 1} สำเร็จ`);
-                    successCount++;
-                } else {
-                    const errorText = await response.text();
-                    console.error(`❌ ส่ง LINE ไปยัง User ${i + 1} ไม่สำเร็จ:`, errorText);
-                    failCount++;
-                }
-                
-                // หน่วงเวลา 500ms ระหว่างการส่ง
-                if (i < LINE_USER_IDS.length - 1) {
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                
-            } catch (error) {
-                console.error(`❌ Error sending LINE to User ${i + 1}:`, error.message);
-                failCount++;
-            }
+                    messages: [{ type: 'text', text: message }]
+                })
+            });
+            await new Promise(r => setTimeout(r, 300)); // Delay prevents rate limit
+        } catch (e) {
+            console.error('Line send error', e);
         }
-        
-        console.log(`📊 สรุปการส่ง LINE: สำเร็จ ${successCount} คน, ล้มเหลว ${failCount} คน`);
-        
-    } catch (error) {
-        console.error('❌ Error sending LINE notifications:', error.message);
     }
 }
 
-function formatDateTime(dateTimeString) {
-    const date = new Date(dateTimeString);
-    const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'Asia/Bangkok'
-    };
-    return date.toLocaleDateString('th-TH', options);
+function formatDateTime(str) {
+    const d = new Date(str);
+    return d.toLocaleDateString('th-TH', {
+        year: 'numeric', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    });
 }
 
-document.getElementById('workHandoverModal').addEventListener('click', function(event) {
-    if (event.target === this) {
-        closeWorkHandoverModal();
+// Close modals on outside click
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal-overlay')) {
+        event.target.classList.remove('active');
+        document.body.style.overflow = 'auto';
     }
-});
+}
