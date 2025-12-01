@@ -1,7 +1,94 @@
 /* ========================================
-   ไฟล์ CSS สำหรับ RACKS Portfolio
+   INTRO ANIMATION STYLES (NEW)
    ======================================== */
+.intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); /* Dark elegant background */
+    z-index: 9999; /* Stay on top of everything */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* Cubic-bezier for very smooth sliding effect */
+    transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+}
 
+.intro-content {
+    text-align: center;
+    color: white;
+    position: relative;
+}
+
+.intro-logo {
+    font-size: 4rem;
+    font-weight: 300; /* Thin elegant font */
+    letter-spacing: 8px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: logoEnter 1.2s ease-out forwards 0.3s;
+    margin-bottom: 15px;
+    background: linear-gradient(to right, #fff, #a5b4fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.intro-line {
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #56CCF2, #E893CF);
+    margin: 0 auto;
+    border-radius: 2px;
+    animation: lineExpand 1s ease-in-out forwards 0.8s;
+}
+
+.intro-text-small {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 15px;
+    opacity: 0;
+    letter-spacing: 2px;
+    animation: fadeInSimple 1s ease forwards 1.2s;
+}
+
+/* Class to hide the intro (slide up) */
+.intro-overlay.hidden {
+    transform: translateY(-100%);
+}
+
+@keyframes logoEnter {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes lineExpand {
+    to {
+        width: 150px;
+    }
+}
+
+@keyframes fadeInSimple {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive Intro */
+@media (max-width: 768px) {
+    .intro-logo {
+        font-size: 2.5rem;
+        letter-spacing: 4px;
+    }
+}
+
+/* ========================================
+   ORIGINAL STYLES
+   ======================================== */
 /* 1. BASE STYLES */
 * {
     margin: 0;
