@@ -2,12 +2,543 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ONSITE MEDIA - ส่งมอบงาน</title>
-    <!-- เชื่อมต่อไฟล์ CSS -->
-    <link rel="stylesheet" href="styles.css">
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================
+           INTRO ANIMATION STYLES
+           ======================================== */
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .intro-content {
+            text-align: center;
+            color: white;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .intro-logo {
+            font-size: clamp(2rem, 8vw, 4rem);
+            font-weight: 300;
+            letter-spacing: clamp(4px, 1vw, 8px);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: logoEnter 1.2s ease-out forwards 0.3s;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .intro-line {
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #56CCF2, #E893CF);
+            margin: 0 auto;
+            border-radius: 2px;
+            animation: lineExpand 1s ease-in-out forwards 0.8s;
+        }
+
+        .intro-text-small {
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 15px;
+            opacity: 0;
+            letter-spacing: 2px;
+            animation: fadeInSimple 1s ease forwards 1.2s;
+        }
+
+        .intro-overlay.hidden {
+            transform: translateY(-100%);
+        }
+
+        @keyframes logoEnter { to { opacity: 1; transform: translateY(0); } }
+        @keyframes lineExpand { to { width: 150px; } }
+        @keyframes fadeInSimple { to { opacity: 1; } }
+
+        /* ========================================
+           BASE STYLES & RESET
+           ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Kanit', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* ========================================
+           HERO SECTION & NAV (UPDATED)
+           ======================================== */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #56CCF2 0%, #9B8FDB 50%, #E893CF 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding-top: 80px; /* Added padding to compensate for fixed nav */
+        }
+
+        /* FIXED NAV - แก้ไขให้เมนูติดด้านบนตลอด */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            position: fixed; /* เปลี่ยนเป็น Fixed */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* สูงกว่า Elements อื่นๆ */
+            background: rgba(255, 255, 255, 0.2); /* โปร่งแสง */
+            backdrop-filter: blur(12px); /* เบลอพื้นหลัง */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 2px;
+            z-index: 1002;
+            cursor: pointer;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 6px;
+            z-index: 1002;
+            padding: 5px;
+        }
+
+        .hamburger span {
+            width: 30px;
+            height: 3px;
+            background-color: white;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+            transform: translateY(-1px);
+        }
+
+        .login-btn {
+            padding: 0.5rem 1.5rem;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            margin-left: 2rem;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .login-btn:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            backdrop-filter: blur(2px);
+        }
+
+        /* HERO CONTENT */
+        .hero-content {
+            text-align: center;
+            padding: 2rem 1rem;
+            position: relative;
+            z-index: 10;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            color: white;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            line-height: 1.2;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: rgba(255, 255, 255, 0.95);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.6;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 1s ease-out 0.7s both;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            background: white;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-left: 12px solid #667eea;
+            border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+        }
+
+        /* DASHBOARD PREVIEW */
+        .dashboard-preview {
+            width: 100%;
+            max-width: 1200px;
+            margin: 2rem auto 0;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 10;
+            animation: fadeInUp 1.2s ease-out 0.9s both;
+            padding-bottom: 4rem;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            transition: transform 0.5s ease;
+        }
+
+        .dashboard-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .dashboard-title { display: flex; align-items: center; gap: 0.8rem; color: #333; font-weight: 600; }
+        .user-info { display: flex; align-items: center; gap: 1rem; }
+        .user-details { text-align: right; display: flex; flex-direction: column; line-height: 1.2; }
+        .user-details span { font-weight: 600; font-size: 0.9rem; }
+        .user-details small { color: #888; font-size: 0.75rem; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        .calendar-container { padding: 1.5rem; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .month-nav { background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #64748b; transition: all 0.2s; }
+        .month-nav:hover { background: #667eea; color: white; }
+        #currentMonthYear { font-size: 1.2rem; font-weight: 600; color: #1e293b; }
+        .calendar-weekdays, .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .calendar-weekdays { margin-bottom: 0.5rem; font-weight: 600; color: #64748b; font-size: 0.85rem; }
+        .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 0.9rem; cursor: pointer; background: #f8fafc; transition: all 0.2s; position: relative; }
+        .calendar-day:hover { background: #e2e8f0; transform: scale(1.05); z-index: 2; }
+        .calendar-day.today { background: #667eea; color: white; font-weight: bold; box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4); }
+        .calendar-day.holiday { background: #fee2e2; color: #ef4444; font-weight: bold; }
+        .calendar-day.holiday::after { content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px; background: #ef4444; border-radius: 50%; }
+        .calendar-legend { margin-top: 1.5rem; display: flex; justify-content: center; gap: 1.5rem; border-top: 1px solid #f1f5f9; padding-top: 1rem; }
+        .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #64748b; }
+        .legend-color { width: 12px; height: 12px; border-radius: 3px; }
+        .legend-color.holiday { background: #fee2e2; border: 1px solid #fca5a5; }
+        .legend-color.today { background: #667eea; }
+
+        /* ========================================
+           NEW ABOUT SECTION (COLLAGE STYLE)
+           ======================================== */
+        #about {
+            position: relative;
+            background-color: #000;
+            overflow: hidden;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+        }
+
+        .collage-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Styling for scattered images */
+        .collage-item {
+            position: absolute;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            filter: grayscale(100%) brightness(0.7); /* Black & white, slightly dark */
+            transition: all 0.5s ease;
+            opacity: 0.8;
+        }
+
+        .collage-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .collage-item:hover {
+            filter: grayscale(0%) brightness(1);
+            z-index: 5;
+            transform: scale(1.05) !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        /* Positioning specific images to mimic the reference */
+        .c-img-1 { width: 20%; left: 5%; top: 20%; transform: rotate(-5deg); }
+        .c-img-2 { width: 25%; left: 20%; bottom: 10%; transform: rotate(3deg); z-index: 2; }
+        .c-img-3 { width: 18%; left: 40%; top: 10%; transform: rotate(5deg); }
+        .c-img-4 { width: 22%; right: 25%; bottom: 20%; transform: rotate(-4deg); }
+        .c-img-5 { width: 28%; right: -5%; top: 15%; transform: rotate(6deg); }
+        .c-img-6 { width: 20%; right: 10%; bottom: 5%; transform: rotate(-2deg); }
+        .c-img-7 { width: 15%; left: -2%; bottom: 40%; transform: rotate(8deg); }
+
+        .about-overlay-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 70%);
+            padding: 3rem;
+            border-radius: 50%;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .central-text {
+            font-family: 'Kanit', sans-serif;
+            font-weight: 800;
+            line-height: 0.9;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            letter-spacing: -2px;
+        }
+
+        .text-white {
+            display: block;
+            color: white;
+            font-size: clamp(3rem, 8vw, 6rem);
+            text-shadow: 0 5px 15px rgba(0,0,0,0.8);
+        }
+
+        .text-gradient {
+            display: block;
+            font-size: clamp(3rem, 8vw, 6rem);
+            background: linear-gradient(90deg, #a78bfa 0%, #f472b6 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 5px 15px rgba(167, 139, 250, 0.4));
+        }
+
+        .subtitle-text {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,1);
+        }
+
+        .follow-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 35px;
+            background: white;
+            color: black;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .follow-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* ========================================
+           MODALS
+           ======================================== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-overlay.active { display: flex; }
+        .login-modal, .work-handover-modal { background: white; border-radius: 20px; padding: 2rem; width: 100%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); max-height: 90vh; overflow-y: auto; }
+        .login-modal { max-width: 400px; }
+        .work-handover-modal { max-width: 700px; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .close-btn, .close-btn-inline { background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 1.5rem; line-height: 1; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .close-btn { position: absolute; top: 1.5rem; right: 1.5rem; }
+        .close-btn:hover, .close-btn-inline:hover { background: #fee2e2; color: #ef4444; }
+        h2 { font-size: 1.5rem; color: #1e293b; margin-bottom: 0.5rem; }
+        .subtitle-modal { color: #64748b; margin-bottom: 1.5rem; font-size: 0.9rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; color: #334155; font-size: 0.9rem; margin-bottom: 0.4rem; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; font-family: inherit; transition: border-color 0.2s; background: #f8fafc; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; background: white; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .submit-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: transform 0.2s; }
+        .submit-btn:active { transform: scale(0.98); }
+
+        /* KEYFRAMES */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+        .cursor { animation: blink 0.7s infinite; }
+        .floating-shapes { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        .shape { position: absolute; background: white; border-radius: 50%; opacity: 0.1; }
+        .shape:nth-child(1) { width: 300px; height: 300px; top: -100px; left: -100px; animation: float 20s infinite; }
+        .shape:nth-child(2) { width: 200px; height: 200px; bottom: -50px; right: -50px; animation: float 15s infinite reverse; }
+        @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(30px, 30px); } }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            h1 { font-size: 3.5rem; }
+            .dashboard-preview { width: 95%; }
+            .c-img-1, .c-img-5, .c-img-7 { display: none; } /* Hide some images on tablet to reduce clutter */
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 1rem 1.5rem; }
+            .hamburger { display: flex; }
+            .nav-container { position: fixed; top: 0; right: -100%; width: 70%; height: 100vh; background: rgba(255, 255, 255, 0.98); flex-direction: column; justify-content: center; align-items: center; transition: right 0.3s cubic-bezier(0.77, 0, 0.175, 1); z-index: 1001; box-shadow: -10px 0 30px rgba(0,0,0,0.1); }
+            .nav-container.active { right: 0; }
+            .nav-links { flex-direction: column; align-items: center; gap: 2rem; margin-bottom: 2rem; }
+            .nav-links a { color: #333; font-size: 1.5rem; font-weight: 600; }
+            .login-btn { margin: 0; background: #667eea; color: white; border: none; width: 80%; text-align: center; padding: 1rem; }
+            .mobile-menu-overlay.active { display: block; }
+            .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+            .hamburger.active span:nth-child(2) { opacity: 0; }
+            .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); background-color: #333; }
+            .hamburger.active span { background-color: #333; }
+            .hero-content { padding-top: 6rem; }
+            .form-row { grid-template-columns: 1fr; gap: 0; }
+            .dashboard-card { transform: none !important; }
+            
+            /* Collage Mobile Adjustments */
+            .c-img-2, .c-img-4, .c-img-6 { display: none; } /* Hide more on mobile */
+            .c-img-3 { width: 80%; left: 10%; top: 10%; opacity: 0.3; transform: none; } /* Show one main image faded */
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 { font-size: 2.5rem; }
+            .subtitle { font-size: 0.95rem; }
+            .cta-button { width: 100%; justify-content: center; }
+            .dashboard-header { flex-direction: column; align-items: flex-start; }
+            .user-info { width: 100%; justify-content: flex-end; }
+        }
+    </style>
 </head>
 <body>
     <!-- ✨ INTRO OVERLAY -->
@@ -19,6 +550,9 @@
         </div>
     </div>
 
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMenu()"></div>
+
     <!-- Hero Section -->
     <div class="hero" id="home">
         <div class="floating-shapes">
@@ -28,20 +562,29 @@
         </div>
 
         <nav>
-            <div class="logo">ONSITE MEDIA</div>
-            <div style="display: flex; align-items: center;">
+            <div class="logo" onclick="window.scrollTo(0,0)">ONSITE MEDIA</div>
+            
+            <!-- Hamburger Icon for Mobile -->
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <!-- Nav Container -->
+            <div class="nav-container" id="navContainer">
                 <ul class="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
+                    <li><a href="#home" onclick="toggleMenu()">หน้าหลัก</a></li>
+                    <li><a href="#about" onclick="toggleMenu()">เกี่ยวกับเรา</a></li>
                 </ul>
-                <a href="#login" class="login-btn" onclick="openLoginModal(event)">Login</a>
+                <a href="#login" class="login-btn" onclick="openLoginModal(event); toggleMenu()">เข้าสู่ระบบ</a>
             </div>
         </nav>
 
         <div class="hero-content">
             <h1><span class="typing-text"></span><span class="cursor">|</span></h1>
             <p class="subtitle">
-                เว็บไซต์นี้ออกแบบเพื่อการส่งมอบงานและการดูตารางงานและวันหยุดของแผนก.
+                ระบบจัดการส่งมอบงานและตรวจสอบตารางงาน<br>สำหรับทีม ONSITE MEDIA
             </p>
             <a href="#video" class="cta-button" onclick="openWorkHandoverModal(event)">
                 <span class="play-icon"></span>
@@ -54,12 +597,14 @@
                 <div class="dashboard-header">
                     <div class="dashboard-title">
                         <div class="icon-home">📅</div>
-                        <span>ปฏิทินวันหยุด</span>
+                        <span>ปฏิทินงาน</span>
                     </div>
                     <div class="user-info">
-                        <span>🔔</span>
+                        <div class="user-details">
+                            <span id="userDisplayName">Guest</span>
+                            <small id="userRoleDisplay">Visitor</small>
+                        </div>
                         <div class="avatar"></div>
-                        <span id="userDisplayName">Guest</span>
                     </div>
                 </div>
                 <div class="calendar-container">
@@ -93,43 +638,28 @@
         </div>
     </div>
 
-    <!-- About Section -->
+    <!-- About Section (New Collage Style) -->
     <section id="about">
-        <div class="background-container">
-            <div class="marquee-row">
-                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584083621_1244582484362180_7048718235451286026_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH3NE6dj2zFqvdp867c8U9nSEhJVWQF7VtISElVZAXtW8RBLOtxz9dr9FkZLzvWPEGBjlp4Q-yhFAqkAkpU1U0J&_nc_ohc=pPU077fJf7oQ7kNvwGPKCFY&_nc_oc=AdnX7NEzevWPobDBBFh6r9ZkStvBbHMIHGySyLCMbaw29DSAJB1rErn1sFoI3e_IClhvUc8spZdmwdwGjyzzzivB&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=DT3CjTxXt0m5AIQI1bhaZA&oh=00_AfhDTlz8ftYEOxLMR2qRu-lKImyJL0ER1nPAKH47Mx0xPQ&oe=6929DED0" alt="Work 1"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584081824_1243238751163220_4817020775730592325_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGmbBqGu0OWwHj6NEp4ryjCNbYLsUsq1QM1tguxSyrVA_p8jksqo-trmWVB9chuAMNiZCh1FYmumozenzoLnvm_&_nc_ohc=zY5fYnSyKOkQ7kNvwGt8oxo&_nc_oc=AdmlRZ_EiOCqfXIdhXcCoUj-DhjzIoOWNzx0lXx6a3OL1180KjYcc9h_SCjOoHJV6oKsGXx_8Mv8fMR-UFlpPGDz&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=AuNH4w88QZtWnyLwZzv9BA&oh=00_AfhXSCZbxfWi3b0iWGPy8mKs_hupfhW6EYOI45iCPX4plw&oe=6929CD20" alt="Work 2"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583346259_1243238954496533_4486815624509464565_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFAbPvTl113XUN1JQOfwTY0EbcFhmo-p_IRtwWGaj6n8vyYMe0a09AmW2G2dkgRxZ5T7-5ZBxPQE94QgJ96Gaz3&_nc_ohc=6kAaM6SSBqAQ7kNvwF3DknB&_nc_oc=AdkgyFhskbOmfelf-rLzptYh5G6dumfpQJWaN9iGYRotqev81SmYjbR7VfjcOA6B347oJoKXaeVr30rpM1GKUd5h&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=_DE-df2TcndY_hLqsXcU3Q&oh=00_AfhrpE3hROtmQGcsaWJkEGdjLbX7al_at4c3A43u1vN6Og&oe=6929D59D" alt="Work 3"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/581219548_1240543638099398_8265859514418368324_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEGHS5PCS7HT1mnKnSfiVQip_8BFAU2wv6n_wEUBTbC_oansDiYA_nJx1gUjBt9gvNHuIPhJTsHq94sVESPDQah&_nc_ohc=3l3uMbkmO4oQ7kNvwFis0W-&_nc_oc=AdkgdPBH478nTosOFta5xUzZzcdzXstQEck0FUjjoq1KRAQ3eFbuDSFc_0uqzZAoQWB2gRH9LiFf47umhhgwsczy&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=Be5JafEnYl-KDHkfo0GVTA&oh=00_AfhcYcGdyWMb9rMTY7mKDQz_tEjTcJ4Orrz2baTFuvHyYg&oe=6929FBD7" alt="Work 4"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583081427_1240543604766068_7617081055060763388_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHDfafdjsGVYLrdf-jtm6RM9Hq_StiTSpT0er9K2JNKlCu1sDZY5dWzjVIrY4OEaiLhkM74XdmxHNUy3RBtWfPZ&_nc_ohc=VWfVRv-s408Q7kNvwEFD4E0&_nc_oc=AdnisTzjveuESUkCnPC2j7RuWpPsxas8HWQca2FsWrIfmNONEVR2q9di8XaQmzGIzoa1GHd8pqoAnVv1Z-t1lWJI&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=cx9BGCbnk43vq5RBTQC-uw&oh=00_Afid4qK9iQpznEngFvUoMj_dpbuBW5F7keW42Xfg3QbJmg&oe=6929D83C" alt="Work 1"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/581335526_1240543164766112_865208384607382058_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEfzb-lrpTRHCRZZJrFgpsK2UL-rfn88crZQv6t-fzxyrJBKnNoPjFzZzcXouLRWL9wzc3-0MLFY8l9UB6nbrdb&_nc_ohc=xGVPTKOfSRUQ7kNvwEa7rr5&_nc_oc=AdkWbKtaMH-n1ouVvYQzNfO278ljLGZ2d6uusRXGaAnz4ril_yDcGjqShMqFe7P0jrZBLaIXYtUVoZDE9bJ1kHiX&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=nzJg1Rb1GWJxVzQ2fKEDLQ&oh=00_AfissA-yn5Rp5QVCqPk2aIsmnFcwY-okb5CT09pvYzjCHA&oe=6929D798" alt="Work 2"></div>
-            </div>
-            <div class="marquee-row">
-                <div class="marquee-item"><img src="https://scontent.fbkk5-5.fna.fbcdn.net/v/t39.30808-6/579627055_1239208884899540_7505172026174050823_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFhCrGHfieDt6dQGCSnnFgiYvM-JJ4Ze9Vi8z4knhl71Rq1ZTMF6QDpdoH8sBDAwKLguOGH7qrpxXAjyLV_QsCG&_nc_ohc=bo6LEE-gkRsQ7kNvwHo9doz&_nc_oc=AdkgHfrDmqU3-pZoU4ygHU-4v1EQSlNmjKNX60cOc-EpH_Mw204tEDxa9HngOsPrByf8KvYt74vj_Hh5StUcao5r&_nc_zt=23&_nc_ht=scontent.fbkk5-5.fna&_nc_gid=0SrZ4uuuA9WayAQBk6j99g&oh=00_AfjW6tKYO8sgAkzDvyIs4i1Bwad_ILNz8PDhgmV72b6Xug&oe=6929E93B" alt="Work 5"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-7.fna.fbcdn.net/v/t39.30808-6/578721267_1237419388411823_6823815432459360113_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFYiTma580tCtKXT7R6k9ASnc21b-vQhA2dzbVv69CEDes61VR-1pISIw6Ghc75Y29jUlLqtC-R2gdCOw0vVyc9&_nc_ohc=NbbeiVmp4YEQ7kNvwFy3ITS&_nc_oc=AdkPeZZksrHibKkZMK4jqaI2q53dsTTaUWXnd2iZNlmY2fZLzQPc-UB5A54Z62II3y4LERuNUbz0z3SmewtdLllR&_nc_zt=23&_nc_ht=scontent.fbkk5-7.fna&_nc_gid=vpt7mNS_Il1dfW3j8dMCJw&oh=00_Afgk3yVyHjPy_UvxKHOsEidEOXMw3ymCa14gOxpbzINrFQ&oe=6929D4E9" alt="Work 6"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/577360780_1236617408492021_7759270004382143312_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGKNQe14XlEnmdWT9ZM9o5-gz6ud_ja-eCDPq53-Nr54OJNJQFRUDeUi0yvO0oTffJdnelv2ON5vqnJum8yUCzZ&_nc_ohc=PQD3JSFTcU8Q7kNvwGr9KJi&_nc_oc=Adn4uMOYEBCz2rHV0CRwGkkck4Qr3Cs_ARRzucB83daSpo6RA9WZb-GpcB9AzjHG9iY-iIo2QYIVRVbE5ukBK5F0&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=ko1WdwP6u09xw2-I0txa-g&oh=00_Afj0TgJ04145YZzUAxkmoxHn3rZSn4pbmKYuwwRc3EI8Ow&oe=6929E6B7" alt="Work 7"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/578257092_1236460415174387_3229812755095899012_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFwPR0mSkA2ZlxpimVDQl99kS7HPhWZrFyRLsc-FZmsXMwYeZVaMAMGYVIZejJukuiJPXuRkSK3LyZ5caUj5j0R&_nc_ohc=06B8wagaJI4Q7kNvwFj5BnH&_nc_oc=AdnJccD26Rlt45tlFWIMyEnPRG-jKq_uP376mRVTDbUs56cRtP6v0cnsaXuNMh_RaCiV52Eyh9yknWDKuq1Dzx48&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=wFimZhxL38RtKWlAizhVhQ&oh=00_Afj8g2e0eE4W94X7xyp85hnIrvFSPrj3yYZ1nCxnK-nfGQ&oe=6929EDA3" alt="Work 8"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/577827980_1236460021841093_8606197240900569011_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEqEwUJv_ijFHGsJx_4NapHxHOk2lmyQnHEc6TaWbJCcbYaUrwqNX1HlmcrrJQi6C_kjIhpePYPiG3l49unCy6t&_nc_ohc=wy0ch6aMSdYQ7kNvwHlua6U&_nc_oc=AdnHu5OV1mil4D8Y4SQhaXLVd8A4-Ik2Tb0BO-n29U30DD5a1kFICB7K-PVbTBKY3M8uyQUrs_zlBlIixy3oDV55&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=IO-u_PgxtPzZn8gAVEnjJg&oh=00_Afg_0WO0mPNknFyXUip--XlifhAd0hDDmLFhjyI8x_PBEQ&oe=6929CC7A" alt="Work 5"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-7.fna.fbcdn.net/v/t39.30808-6/576942969_1235629378590824_1147274106713044988_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHqjuSprdECyz7nRUfEAOpg7gHGRQOW9DPuAcZFA5b0M8oYR1LW2UxJqwhHxAAma6pPVF_WbHkyr_XeRX3DUvVc&_nc_ohc=AR6E5eIVc6QQ7kNvwG24bTD&_nc_oc=Adk6ZgBwR2YZUy-p3jubWzLf2_wz1UBRzcQpFB44YEFFGpr31pqFSThgZB54t0GTABbo06iQsCcnp4ed7L6e0pTD&_nc_zt=23&_nc_ht=scontent.fbkk5-7.fna&_nc_gid=aifv7OCi6h0oa1axkfPTHg&oh=00_AfgETIdW-WZm_G6DGEZyHu4rRG8m6BM09owZfEmXO31Xdg&oe=6929F927" alt="Work 6"></div>
-            </div>
-            <div class="marquee-row">
-                <div class="marquee-item"><img src="https://scontent.fbkk5-5.fna.fbcdn.net/v/t39.30808-6/577308334_1235566478597114_2015083468024729176_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHM_Jw4fBbMVkZNwMNblijybF0hm8lMO1FsXSGbyUw7UStSSLJOggg35gwUwGnQ1c-1Sl6UwmRBhvcCEEsJ9UN0&_nc_ohc=HOmW9jX3NhYQ7kNvwGSDDKd&_nc_oc=AdmTxd5pFob5-caBzouw2MR-UhFRZ2l2wiUkPWr2BsGXeTFtGz-oi5cENc-89Ja_-1sc3rW2nZCP7O5i-EkeITTK&_nc_zt=23&_nc_ht=scontent.fbkk5-5.fna&_nc_gid=tELAqduoDfyNyPQ1eMKm6A&oh=00_AfjjGGyCQ33GdhEPtYszqqxoWGzpCRfmU7OTlVbczp5Vzw&oe=6929DE18" alt="Work 9"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-7.fna.fbcdn.net/v/t39.30808-6/576752742_1235385638615198_5114602704157921080_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHxOu7VeWqOzl7EGHdzdqi5EDMOqyPiaLYQMw6rI-Jotv1-I4FHASCSFOBSPyt_OoNwXUbXatLJqTTPR7A-c3uv&_nc_ohc=toqhYdC3uDMQ7kNvwGfsYm-&_nc_oc=Adl5mZib_YBNTIYUl7vCFEt_x5A9xhVQb2EBC3t1SvJAhQ1iwx1S3vvk_cjIBWW1p9P1vEItuIPpN1r0w0KDIigE&_nc_zt=23&_nc_ht=scontent.fbkk5-7.fna&_nc_gid=FP_0xFtHz6-5FXy2GJXyWg&oh=00_Afh1fKYPiAdAgLbbOhwq2Tjs5dGsveu2GpYO9GE0rd0WnQ&oe=6929CA5E" alt="Work 10"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/574608116_1233155128838249_7601943296203232433_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHkwUF7PI4sxbbGKvOCLPsl0oafi_M5-cHShp-L8zn5wdiOrj-rJpTWiQc3ppyTu3WbW_0lR8zVq1NA_502V6I7&_nc_ohc=PzUcRpmNND4Q7kNvwEqLV0g&_nc_oc=AdmVhbDuw5oD1K1lMU5jcjiw-mDa296YhVAY8OqAI82_xQCEFPkBWwY6ql8UbLWnNYM_nKqp8qvjQ7L9k9IVDftQ&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=-Fq7hjyPWRZYWVV629T_ng&oh=00_AfgLD3OH3TqGeOgou-K5ep5elM4z_ua1TvsUeCnDKP-7Vw&oe=6929EF51" alt="Work 11"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/577406610_1233154688838293_4657264830686211355_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeESWNW-LDOxGPfmBz_fz1yYJDoH4ubRn7skOgfi5tGfu4Hb7_b4HR02IZfMhtEpejn59O5P047J1fDpt9LoS5_K&_nc_ohc=jU26l7RHn8sQ7kNvwF9kW61&_nc_oc=AdlkNBTGc108y8wGA8cBsw-mpMO4gyQOS9ynBL_6qHJQ0LonQtK7osgrOoS8kv9_fRAPlI4dQoBSVqvlZMXNOGmn&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=mS51GBa59wiMJY0hODef7A&oh=00_AfjKVUaRS4el9PlDjS-BOsUyGxllfXNdN69xEcNwJXT6Xw&oe=6929D81B" alt="Work 12"></div>
-            </div>
-            <div class="marquee-row">
-                <div class="marquee-item"><img src="https://scontent.fbkk5-8.fna.fbcdn.net/v/t39.30808-6/576600330_1232748632212232_3666377695476788854_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEiBF0knJqlCHKfJ5wZbnzIr76ecsx9XZuvvp5yzH1dm0MOHySnlgc0WiP_e51-sYbCkRqpFtAfjz1RftjHfdOJ&_nc_ohc=AsPoFavKm2IQ7kNvwGlazyO&_nc_oc=AdkWt0TDvJFaBJRAjHz6AT5D-zL-o90Wc0j2JpPF_OkZEdDZbBvZT2pjpMQ2umsXflqN-oJ5Tj7xZKyuE_rhcRfY&_nc_zt=23&_nc_ht=scontent.fbkk5-8.fna&_nc_gid=gqLU6tTUkRT-fERA--F_MQ&oh=00_AfjcPcqEWlGNabNOfZzV7X1Fu7Nuulqm_jQyf1MxSICpiA&oe=6929D614" alt="Work 13"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/574567129_1232010405619388_3656828021743881758_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFIBWUwVb7pIi_ZpmTV-Tlk51kmqFfo7DbnWSaoV-jsNgkpnwlMQCiP_Djeyd3k1LFAY0N0EZziDjyUnBMJOIe1&_nc_ohc=KedUrlppJD8Q7kNvwEQEHSO&_nc_oc=Adk2GyMckIKA7zay3m6-0y-FusM-mjIt0S6VW-xuUdKV8DTRCWo5ur88yN87v4AU2xI6mtxxIwam6aVOUlYVQn73&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=4FnLrIiGO1_BldCO9PizxQ&oh=00_Afh7ZF4uvlXrbUhNVTT0iWX47srgdST5zrVkn8eaeXpDSA&oe=6929CD42" alt="Work 14"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-8.fna.fbcdn.net/v/t39.30808-6/573940272_1231853812301714_6994135009075286114_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEeoaDvLI_IB9H-Oj8AD29nDdD7TGQP8TEN0PtMZA_xMfTrMClM_4WMmBEmf_YLE4uCqii6xWIs5WrwSVR4suMT&_nc_ohc=l_jCKPHZlOoQ7kNvwEJieW_&_nc_oc=AdmCuo9cqOLLdSDQLIyVTlT8O6FT0HMmb3zNbwhDQDA5f2Bxzry9CkcCeODPf791dDvr8iCm_H345k2JW32edKCc&_nc_zt=23&_nc_ht=scontent.fbkk5-8.fna&_nc_gid=FivyQGbdNIkE-SiiWQ7m-Q&oh=00_AfjUj78Cbg5MUJN1F3P91B__lgy_iWhPOUY62cjMSqQf5Q&oe=6929DA76" alt="Work 15"></div>
-                <div class="marquee-item"><img src="https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/574566018_1230378965782532_7825780904163523744_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFDYMH70WCO5IZsyAS-3Bj4aXpb9J0Ifphpelv0nQh-mA3BNPYFp1gPP9fTvkZs-ur8l3SB35fM_KbsLpFv8wvO&_nc_ohc=LSF1H0gCFKwQ7kNvwFU8Jf2&_nc_oc=AdlX6U0kCDfokkfiZJPzlLpaOK96mjRPv4lh1LzF-w3vc6uppgkLohi41omAWZydUdRGIKDPuLuasdcOZX9HwxpG&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=8S9ZIqB5bBUJ6TXrKGZoJQ&oh=00_Afgs55UrRLrq7a5Y2cT_zeDRKx8R3jIR5BHQchmpgdih_A&oe=6929E245" alt="Work 16"></div>
-            </div>
+        <div class="collage-bg">
+            <!-- Images from your previous marquee, arranged as scattered collage -->
+            <div class="collage-item c-img-1"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584083621_1244582484362180_7048718235451286026_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeH3NE6dj2zFqvdp867c8U9nSEhJVWQF7VtISElVZAXtW8RBLOtxz9dr9FkZLzvWPEGBjlp4Q-yhFAqkAkpU1U0J&_nc_ohc=pPU077fJf7oQ7kNvwGPKCFY&_nc_oc=AdnX7NEzevWPobDBBFh6r9ZkStvBbHMIHGySyLCMbaw29DSAJB1rErn1sFoI3e_IClhvUc8spZdmwdwGjyzzzivB&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=DT3CjTxXt0m5AIQI1bhaZA&oh=00_AfhDTlz8ftYEOxLMR2qRu-lKImyJL0ER1nPAKH47Mx0xPQ&oe=6929DED0" alt="Work 1"></div>
+            <div class="collage-item c-img-2"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/584081824_1243238751163220_4817020775730592325_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGmbBqGu0OWwHj6NEp4ryjCNbYLsUsq1QM1tguxSyrVA_p8jksqo-trmWVB9chuAMNiZCh1FYmumozenzoLnvm_&_nc_ohc=zY5fYnSyKOkQ7kNvwGt8oxo&_nc_oc=AdmlRZ_EiOCqfXIdhXcCoUj-DhjzIoOWNzx0lXx6a3OL1180KjYcc9h_SCjOoHJV6oKsGXx_8Mv8fMR-UFlpPGDz&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=AuNH4w88QZtWnyLwZzv9BA&oh=00_AfhXSCZbxfWi3b0iWGPy8mKs_hupfhW6EYOI45iCPX4plw&oe=6929CD20" alt="Work 2"></div>
+            <div class="collage-item c-img-3"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583346259_1243238954496533_4486815624509464565_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFAbPvTl113XUN1JQOfwTY0EbcFhmo-p_IRtwWGaj6n8vyYMe0a09AmW2G2dkgRxZ5T7-5ZBxPQE94QgJ96Gaz3&_nc_ohc=6kAaM6SSBqAQ7kNvwF3DknB&_nc_oc=AdkgyFhskbOmfelf-rLzptYh5G6dumfpQJWaN9iGYRotqev81SmYjbR7VfjcOA6B347oJoKXaeVr30rpM1GKUd5h&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=_DE-df2TcndY_hLqsXcU3Q&oh=00_AfhrpE3hROtmQGcsaWJkEGdjLbX7al_at4c3A43u1vN6Og&oe=6929D59D" alt="Work 3"></div>
+            <div class="collage-item c-img-4"><img src="https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/581219548_1240543638099398_8265859514418368324_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEGHS5PCS7HT1mnKnSfiVQip_8BFAU2wv6n_wEUBTbC_oansDiYA_nJx1gUjBt9gvNHuIPhJTsHq94sVESPDQah&_nc_ohc=3l3uMbkmO4oQ7kNvwFis0W-&_nc_oc=AdkgdPBH478nTosOFta5xUzZzcdzXstQEck0FUjjoq1KRAQ3eFbuDSFc_0uqzZAoQWB2gRH9LiFf47umhhgwsczy&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=Be5JafEnYl-KDHkfo0GVTA&oh=00_AfhcYcGdyWMb9rMTY7mKDQz_tEjTcJ4Orrz2baTFuvHyYg&oe=6929FBD7" alt="Work 4"></div>
+            <div class="collage-item c-img-5"><img src="https://scontent.fbkk5-3.fna.fbcdn.net/v/t39.30808-6/583081427_1240543604766068_7617081055060763388_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHDfafdjsGVYLrdf-jtm6RM9Hq_StiTSpT0er9K2JNKlCu1sDZY5dWzjVIrY4OEaiLhkM74XdmxHNUy3RBtWfPZ&_nc_ohc=VWfVRv-s408Q7kNvwEFD4E0&_nc_oc=AdnisTzjveuESUkCnPC2j7RuWpPsxas8HWQca2FsWrIfmNONEVR2q9di8XaQmzGIzoa1GHd8pqoAnVv1Z-t1lWJI&_nc_zt=23&_nc_ht=scontent.fbkk5-3.fna&_nc_gid=cx9BGCbnk43vq5RBTQC-uw&oh=00_Afid4qK9iQpznEngFvUoMj_dpbuBW5F7keW42Xfg3QbJmg&oe=6929D83C" alt="Work 5"></div>
+            <div class="collage-item c-img-6"><img src="https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-6/581335526_1240543164766112_865208384607382058_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEfzb-lrpTRHCRZZJrFgpsK2UL-rfn88crZQv6t-fzxyrJBKnNoPjFzZzcXouLRWL9wzc3-0MLFY8l9UB6nbrdb&_nc_ohc=xGVPTKOfSRUQ7kNvwEa7rr5&_nc_oc=AdkWbKtaMH-n1ouVvYQzNfO278ljLGZ2d6uusRXGaAnz4ril_yDcGjqShMqFe7P0jrZBLaIXYtUVoZDE9bJ1kHiX&_nc_zt=23&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=nzJg1Rb1GWJxVzQ2fKEDLQ&oh=00_AfissA-yn5Rp5QVCqPk2aIsmnFcwY-okb5CT09pvYzjCHA&oe=6929D798" alt="Work 6"></div>
+            <div class="collage-item c-img-7"><img src="https://scontent.fbkk5-5.fna.fbcdn.net/v/t39.30808-6/579627055_1239208884899540_7505172026174050823_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeFhCrGHfieDt6dQGCSnnFgiYvM-JJ4Ze9Vi8z4knhl71Rq1ZTMF6QDpdoH8sBDAwKLguOGH7qrpxXAjyLV_QsCG&_nc_ohc=bo6LEE-gkRsQ7kNvwHo9doz&_nc_oc=AdkgHfrDmqU3-pZoU4ygHU-4v1EQSlNmjKNX60cOc-EpH_Mw204tEDxa9HngOsPrByf8KvYt74vj_Hh5StUcao5r&_nc_zt=23&_nc_ht=scontent.fbkk5-5.fna&_nc_gid=0SrZ4uuuA9WayAQBk6j99g&oh=00_AfjW6tKYO8sgAkzDvyIs4i1Bwad_ILNz8PDhgmV72b6Xug&oe=6929E93B" alt="Work 7"></div>
         </div>
 
-        <div class="about-content">
-            <h1>CENTRAL<br>RAYONG</h1>
-            <p>ติดตามโปรโมชั่นและกิจกรรม Event ต่างๆได้ที่</p>
-            <a href="https://web.facebook.com/CentralRayongFanpage" target="_blank" class="about-cta">ติดตาม</a>
+        <div class="about-overlay-content">
+            <div class="central-text">
+                <span class="text-white">CENTRAL</span>
+                <span class="text-gradient">RAYONG</span>
+            </div>
+            <p class="subtitle-text">ติดตามโปรโมชั่นและกิจกรรม Event ต่างๆ ได้ที่</p>
+            <a href="https://web.facebook.com/CentralRayongFanpage" target="_blank" class="follow-btn">
+                Follow Page 🌍
+            </a>
         </div>
     </section>
 
@@ -137,21 +667,18 @@
     <div class="modal-overlay" id="loginModal">
         <div class="login-modal">
             <button class="close-btn" onclick="closeLoginModal()">×</button>
-            <h2>ล็อกอินเข้าสู่ระบบ</h2>
-            <p class="subtitle-modal">ล็อกอินเพื่อดำเนินการต่อ</p>
-            
+            <h2>เข้าสู่ระบบ</h2>
+            <p class="subtitle-modal">สำหรับเจ้าหน้าที่ ONSITE MEDIA</p>
             <form onsubmit="handleLogin(event)">
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="your.email@example.com" required>
+                    <label for="email">อีเมล</label>
+                    <input type="email" id="email" placeholder="name@onsitemedia.com" required>
                 </div>
-                
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter your password" required>
+                    <label for="password">รหัสผ่าน</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
                 </div>
-                
-                <button type="submit" class="submit-btn">Login</button>
+                <button type="submit" class="submit-btn">เข้าสู่ระบบ</button>
             </form>
         </div>
     </div>
@@ -159,78 +686,288 @@
     <!-- Work Handover Form Modal -->
     <div class="modal-overlay" id="workHandoverModal">
         <div class="work-handover-modal">
-            <button class="close-btn" onclick="closeWorkHandoverModal()">×</button>
-            <h2>📝 แบบฟอร์มส่งมอบงาน</h2>
-            <p class="subtitle-modal">กรุณากรอกข้อมูลให้ครบถ้วน</p>
-            
+            <div class="modal-header">
+                <h2>📝 แบบฟอร์มส่งมอบงาน</h2>
+                <button class="close-btn-inline" onclick="closeWorkHandoverModal()">×</button>
+            </div>
+            <p class="subtitle-modal">กรุณากรอกข้อมูลให้ครบถ้วนเพื่อการติดตามงานที่มีประสิทธิภาพ</p>
             <form onsubmit="handleWorkHandoverSubmit(event)">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="workDate">วันที่-เวลา</label>
+                        <label for="workDate">วันที่บันทึก</label>
                         <input type="datetime-local" id="workDate" required>
                     </div>
-                    
                     <div class="form-group">
                         <label for="senderName">ชื่อผู้ส่ง</label>
                         <input type="text" id="senderName" placeholder="ชื่อ-นามสกุล" required>
                     </div>
                 </div>
-
                 <div class="form-row">
                     <div class="form-group">
                         <label for="senderDepartment">แผนกผู้ส่ง</label>
                         <select id="senderDepartment" required>
                             <option value="">-- เลือกแผนก --</option>
-                            <option value="sales">ฝ่ายขาย</option>
-                            <option value="marketing">ฝ่ายการตลาด</option>
-                            <option value="it">ฝ่าย IT</option>
-                            <option value="hr">ฝ่ายบุคคล</option>
-                            <option value="finance">ฝ่ายบัญชี</option>
-                            <option value="production">ฝ่ายผลิต</option>
-                            <option value="maintenance">ฝ่ายซ่อมบำรุง</option>
+                            <option value="sales">ฝ่ายขาย (Sales)</option>
+                            <option value="marketing">ฝ่ายการตลาด (Marketing)</option>
+                            <option value="it">ฝ่าย IT / Support</option>
+                            <option value="hr">ฝ่ายบุคคล (HR)</option>
+                            <option value="finance">ฝ่ายบัญชี (Finance)</option>
+                            <option value="production">ฝ่ายผลิต (Production)</option>
+                            <option value="maintenance">ฝ่ายซ่อมบำรุง (Maintenance)</option>
                         </select>
                     </div>
-                    
                     <div class="form-group">
                         <label for="priority">ความสำคัญ</label>
                         <select id="priority" required>
-                            <option value="">-- เลือกความสำคัญ --</option>
-                            <option value="urgent">🔴 ด่วนมาก</option>
-                            <option value="high">🟠 สำคัญ</option>
-                            <option value="medium">🟡 ปานกลาง</option>
-                            <option value="low">🟢 ปกติ</option>
+                            <option value="">-- ระดับความเร่งด่วน --</option>
+                            <option value="urgent">🔴 ด่วนมาก (ภายใน 24 ชม.)</option>
+                            <option value="high">🟠 สำคัญ (ภายใน 3 วัน)</option>
+                            <option value="medium">🟡 ปานกลาง (ภายในสัปดาห์)</option>
+                            <option value="low">🟢 ปกติ (ตามแผนงาน)</option>
                         </select>
                     </div>
                 </div>
-
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="storeName">ชื่อร้าน</label>
-                        <input type="text" id="storeName" placeholder="ระบุชื่อร้าน/โครงการ" required>
+                        <label for="storeName">ชื่อร้าน / โครงการ</label>
+                        <input type="text" id="storeName" placeholder="ระบุชื่อร้านหรือโครงการ" required>
                     </div>
-                    
                     <div class="form-group">
-                        <label for="location">ชั้น / พื้นที่</label>
-                        <input type="text" id="location" placeholder="เช่น ชั้น 2 / โซน A" required>
+                        <label for="location">สถานที่ / ชั้น / โซน</label>
+                        <input type="text" id="location" placeholder="เช่น ชั้น 2 โซน A" required>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="workDetails">รายละเอียดงาน</label>
-                    <textarea id="workDetails" rows="4" placeholder="โปรดระบุรายละเอียดงานที่ต้องการส่งมอบ..." required></textarea>
+                    <textarea id="workDetails" rows="4" placeholder="อธิบายรายละเอียดงาน สิ่งที่ต้องทำ หรือหมายเหตุ..." required></textarea>
                 </div>
-
                 <div class="form-group">
-                    <label for="workDateTime">วันที่-เวลางาน</label>
+                    <label for="workDateTime">กำหนดการเริ่มงาน / ส่งมอบ</label>
                     <input type="datetime-local" id="workDateTime" required>
                 </div>
-                
-                <button type="submit" class="submit-btn">ส่งมอบงาน</button>
+                <button type="submit" class="submit-btn">🚀 ยืนยันการส่งมอบงาน</button>
             </form>
         </div>
     </div>
 
-    <!-- เชื่อมต่อไฟล์ Script -->
-    <script src="script.js"></script>
+    <!-- Script Logic -->
+    <script>
+        // ⚙️ ตั้งค่า Supabase
+        const SUPABASE_URL = 'https://slejbpinrkbtkwfqzrbs.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNsZWpicGlucmtidGt3ZnF6cmJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1MzIxODUsImV4cCI6MjA3ODEwODE4NX0.NYeuGdkiej5g2b_0BKGvG9JVS03fh9uO2mdD2xMLAXo';
+        const LINE_CHANNEL_ACCESS_TOKEN = 'NA6cbvMSSdRzh8uXPn3xKcEXiu6mF9n9EvyMrBQIhfCXYOS5zmhlqSyZJtppfYP2RjIqWJBOHjeRoXFMY2SFwGMav7291f5kl1uxV7+5+1KN3boWgvsZ/X5TWrj6IyHzHKt7VzLVL6fx/EhkjAzDpgdB04t89/1O/w1cDnyilFU=';
+        const LINE_USER_IDS = ['U05e988ee991017311410c6c49f125295', 'U91b1ef62be46477c06803071156346bf'];
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLTxcfJrZqPnSXZQimh8psaxdGHUn-5n1Z0e0S31tSAavfIB0FSqx7_NZbrQxcMDQn/exec';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentDate = new Date();
+        let holidays = [];
+        const typingTexts = ['Ready to Work.', 'พร้อมทำงาน.', 'ส่งมอบงานได้เลย.'];
+        let textIndex = 0, charIndex = 0, isDeleting = false, typingSpeed = 100;
+
+        function toggleMenu() {
+            const navContainer = document.getElementById('navContainer');
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const hamburger = document.querySelector('.hamburger');
+            navContainer.classList.toggle('active');
+            overlay.classList.toggle('active');
+            hamburger.classList.toggle('active');
+            if (navContainer.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function typeText() {
+            const typingElement = document.querySelector('.typing-text');
+            if (!typingElement) return;
+            const currentText = typingTexts[textIndex];
+            if (isDeleting) {
+                typingElement.textContent = currentText.substring(0, charIndex - 1);
+                charIndex--; typingSpeed = 50;
+            } else {
+                typingElement.textContent = currentText.substring(0, charIndex + 1);
+                charIndex++; typingSpeed = 100;
+            }
+            if (!isDeleting && charIndex === currentText.length) {
+                typingSpeed = 2000; isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false; textIndex = (textIndex + 1) % typingTexts.length; typingSpeed = 500;
+            }
+            setTimeout(typeText, typingSpeed);
+        }
+
+        function handleIntro() {
+            const intro = document.getElementById('introOverlay');
+            if (intro) { setTimeout(() => { intro.classList.add('hidden'); }, 3000); }
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            handleIntro();
+            typeText();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) { updateUIForLoggedInUser(user); }
+            await loadHolidays();
+            renderCalendar();
+            document.getElementById('prevMonth').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+            document.getElementById('nextMonth').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+        });
+
+        async function loadHolidays() {
+            try {
+                const { data, error } = await supabase.from('holidays').select('*').order('date', { ascending: true });
+                if (error) throw error; holidays = data || [];
+            } catch (error) { console.error('Error loading holidays:', error.message); holidays = []; }
+        }
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const monthNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+            document.getElementById('currentMonthYear').textContent = `${monthNames[month]} ${year + 543}`;
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            const calendarDays = document.getElementById('calendarDays');
+            calendarDays.innerHTML = '';
+            for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+                const day = prevMonthLastDay - i;
+                const dayDiv = createDayElement(day, true);
+                dayDiv.style.opacity = '0.3';
+                calendarDays.appendChild(dayDiv);
+            }
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayDiv = createDayElement(day, false);
+                if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) { dayDiv.classList.add('today'); }
+                const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const holiday = holidays.find(h => h.date === dateString);
+                if (holiday) { dayDiv.classList.add('holiday'); dayDiv.title = holiday.name || 'วันหยุด'; }
+                calendarDays.appendChild(dayDiv);
+            }
+            const totalCells = calendarDays.children.length;
+            const remainingCells = 42 - totalCells;
+            for (let day = 1; day <= remainingCells; day++) {
+                const dayDiv = createDayElement(day, true);
+                dayDiv.style.opacity = '0.3';
+                calendarDays.appendChild(dayDiv);
+            }
+        }
+
+        function createDayElement(day, isOtherMonth) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'calendar-day';
+            dayDiv.textContent = day;
+            if (isOtherMonth) dayDiv.classList.add('other-month');
+            return dayDiv;
+        }
+
+        function openLoginModal(event) { if(event) event.preventDefault(); document.getElementById('loginModal').classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeLoginModal() { document.getElementById('loginModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const submitBtn = event.target.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'กำลังตรวจสอบ...'; submitBtn.disabled = true;
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({ email: email, password: password });
+                if (error) throw error;
+                alert(`ยินดีต้อนรับ ${data.user.email}`);
+                closeLoginModal(); updateUIForLoggedInUser(data.user);
+            } catch (error) { alert('เข้าสู่ระบบไม่สำเร็จ: ' + error.message); }
+            finally { submitBtn.textContent = originalText; submitBtn.disabled = false; }
+        }
+
+        async function handleLogout() { await supabase.auth.signOut(); location.reload(); }
+
+        function updateUIForLoggedInUser(user) {
+            const loginBtn = document.querySelector('.login-btn');
+            if (loginBtn) {
+                loginBtn.textContent = 'ออกจากระบบ';
+                loginBtn.onclick = (e) => { e.preventDefault(); if(confirm('ต้องการออกจากระบบใช่หรือไม่?')) handleLogout(); };
+                loginBtn.style.background = 'rgba(239, 68, 68, 0.2)'; loginBtn.style.borderColor = '#ef4444';
+            }
+            const userNameDisplay = document.getElementById('userDisplayName');
+            if (userNameDisplay) userNameDisplay.textContent = user.email.split('@')[0];
+            const userRoleDisplay = document.getElementById('userRoleDisplay');
+            if (userRoleDisplay) userRoleDisplay.textContent = 'Staff Member';
+        }
+
+        async function openWorkHandoverModal(event) {
+            event.preventDefault();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) { alert('กรุณาเข้าสู่ระบบก่อนส่งมอบงาน'); openLoginModal(); return; }
+            document.getElementById('workHandoverModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            const now = new Date();
+            const offset = now.getTimezoneOffset() * 60000;
+            const localISOTime = (new Date(now - offset)).toISOString().slice(0, 16);
+            document.getElementById('workDate').value = localISOTime;
+            document.getElementById('workDateTime').value = localISOTime;
+            if (user.user_metadata?.full_name) document.getElementById('senderName').value = user.user_metadata.full_name;
+        }
+
+        function closeWorkHandoverModal() { document.getElementById('workHandoverModal').classList.remove('active'); document.body.style.overflow = 'auto'; document.querySelector('#workHandoverModal form').reset(); }
+
+        async function handleWorkHandoverSubmit(event) {
+            event.preventDefault();
+            const submitBtn = event.target.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '⏳ กำลังบันทึก...'; submitBtn.disabled = true;
+            try {
+                const workData = {
+                    work_date: document.getElementById('workDate').value,
+                    sender_name: document.getElementById('senderName').value,
+                    sender_department: document.getElementById('senderDepartment').value,
+                    priority: document.getElementById('priority').value,
+                    store_name: document.getElementById('storeName').value,
+                    location: document.getElementById('location').value,
+                    work_details: document.getElementById('workDetails').value,
+                    work_datetime: document.getElementById('workDateTime').value,
+                    created_at: new Date().toISOString()
+                };
+                const { error } = await supabase.from('work_handovers').insert([workData]);
+                if (error) throw error;
+                await sendToGoogleSheets(workData);
+                await sendLineNotifications(workData);
+                alert('✅ ส่งมอบงานสำเร็จเรียบร้อย'); closeWorkHandoverModal();
+            } catch (error) { console.error(error); alert('❌ เกิดข้อผิดพลาด: ' + error.message); }
+            finally { submitBtn.textContent = originalText; submitBtn.disabled = false; }
+        }
+
+        async function sendToGoogleSheets(data) {
+            try { await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); }
+            catch (e) { console.warn('Google Sheet Error', e); }
+        }
+
+        async function sendLineNotifications(workData) {
+            const priorityEmoji = { 'urgent': '🔴', 'high': '🟠', 'medium': '🟡', 'low': '🟢' };
+            const message = `🔔 *แจ้งเตือนงานใหม่*\n\n${priorityEmoji[workData.priority] || '⚪'} ความสำคัญ: ${workData.priority}\n👤 ผู้ส่ง: ${workData.sender_name}\n🏢 แผนก: ${workData.sender_department}\n🏪 ร้าน: ${workData.store_name}\n📍 สถานที่: ${workData.location}\n📝 รายละเอียด: ${workData.work_details}\n⏰ เวลางาน: ${formatDateTime(workData.work_datetime)}`;
+            for (const userId of LINE_USER_IDS) {
+                try {
+                    await fetch('https://api.line.me/v2/bot/message/push', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}` },
+                        body: JSON.stringify({ to: userId, messages: [{ type: 'text', text: message }] })
+                    });
+                    await new Promise(r => setTimeout(r, 300));
+                } catch (e) { console.error('Line send error', e); }
+            }
+        }
+
+        function formatDateTime(str) {
+            const d = new Date(str);
+            return d.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        window.onclick = function(event) { if (event.target.classList.contains('modal-overlay')) { event.target.classList.remove('active'); document.body.style.overflow = 'auto'; } }
+    </script>
 </body>
 </html>
