@@ -810,12 +810,20 @@
         let textIndex = 0, charIndex = 0, isDeleting = false, typingSpeed = 100;
 
         function toggleMenu() {
+            // Check if mobile mode is active (hamburger is visible)
+            const hamburgerBtn = document.querySelector('.hamburger');
+            if (window.getComputedStyle(hamburgerBtn).display === 'none') {
+                return; // Exit if not in mobile mode (Desktop) - ป้องกัน Scrollbar หายบน Desktop
+            }
+
             const navContainer = document.getElementById('navContainer');
             const overlay = document.getElementById('mobileMenuOverlay');
             const hamburger = document.querySelector('.hamburger');
+            
             navContainer.classList.toggle('active');
             overlay.classList.toggle('active');
             hamburger.classList.toggle('active');
+            
             if (navContainer.classList.contains('active')) {
                 document.body.style.overflow = 'hidden';
             } else {
@@ -1014,4 +1022,3 @@
     </script>
 </body>
 </html>
-
